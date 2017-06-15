@@ -4,10 +4,19 @@ const webpack = require('webpack');
 const config = {
 
     /**
+     * 開啟nodejs的__filename和__dirname
+     */
+    node: {
+        __filename: true,
+        __dirname: true
+    },
+
+    /**
      * 每個Window也有獨立的JS檔
      */
     entry: {
-        main_window: ['./app/src/main_window/index.jsx']
+        main_window: ['./app/src/main_window/index.jsx'],
+        player_window: ['./app/src/player_window/index.jsx']
     },
 
     /**
@@ -41,14 +50,13 @@ const config = {
      * 排外的 Modules
      */
     externals: {
+        "electron": "require('electron')",
     },
 
     /**
      * 
      */
     plugins: [
-        // new webpack.ExternalsPlugin('commonjs', ['fs']),
-        // new webpack.IgnorePlugin(/vertx/)
     ]
 };
 
