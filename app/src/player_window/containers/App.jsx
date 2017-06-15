@@ -1,13 +1,12 @@
 import React from 'react';
-import Electron from 'electron';
-const ipc = Electron.ipcRenderer
+import Electron, { ipcRenderer as ipc } from 'electron';
 
 class App extends React.Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            data: ''
+            content: ''
         }
     }
 
@@ -15,16 +14,20 @@ class App extends React.Component {
         /**
          * Receive
          */
-        ipc.on('data', (event, arg) => {
-            this.setState({ data: arg });
-            console.log('Receive: ', arg);
+        ipc.on('CONTENT', (event, arg) => {
+            this.setState({ content: arg });
+            console.log('On CONTENT: ', arg);
+        });
+
+        ipc.on('TEMPLATE', (event, arg) => {
+            console.log('On TEMPLATE: ', 'Template');
         });
     }
 
     render() {
         return (
             <div>
-                <h1 id="display">{this.state.data}</h1>
+                <h1 id="display">Time: {this.state.content}</h1>
             </div>
         )
     }

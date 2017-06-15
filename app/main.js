@@ -1,13 +1,12 @@
-const Electron = require('electron')
-const app = Electron.app
-const globalShortcut = Electron.globalShortcut
-const BrowserWindow = Electron.BrowserWindow
-const ipc = Electron.ipcMain
 
+const Electron = require('electron')
+const { app, globalShortcut, BrowserWindow, ipcMain } = Electron
+const DEV_MODE = process.env.NODE_ENV && process.env.NODE_ENV.trim() === 'development';
 const path = require('path')
 const url = require('url')
 
-let mainWindow
+let mainWindow = null
+let playerWindow = null
 
 /**
  * Build up development tool
@@ -60,11 +59,11 @@ function devShortcut() {
 /**
  * Build up main window
  */
-function createWindow() {
+function createMainWindow() {
     // Create the browser window.
     mainWindow = new BrowserWindow({ width: 1000, height: 700 })
 
-    // and load the index.html of the app.
+    // Load app index page.
     mainWindow.loadURL(url.format({
         pathname: path.join(__dirname, './main_window.html'),
         protocol: 'file:',
@@ -72,7 +71,8 @@ function createWindow() {
     }))
 
     // Open the DevTools.
-    mainWindow.webContents.openDevTools()
+    if (DEV_MODE)
+        mainWindow.webContents.openDevTools()
 
     // Emitted when the window is closed.
     mainWindow.on('closed', function () {
@@ -84,22 +84,124 @@ function createWindow() {
 /**
  * 
  */
+function getExternalDisplay() {
+    var displays = Electron.screen.getAllDisplays();
+    var externalDisplay = null;
+    for (var i in displays) {
+        if (displays[i].bounds.x != 0 || displays[i].bounds.y != 0) {
+            externalDisplay = displays[i];
+            break;
+        }
+    }
+
+    return externalDisplay;
+}
+
+/**
+ * 
+ */
+function creatPlayerWindow(bounds) {
+
+    let playerWindow = new BrowserWindow({
+        title: 'Player Window',
+        x: bounds.x,
+        y: bounds.y,
+        width: bounds.width,
+        height: bounds.height,
+        // kiosk: true,
+        // frame: false,
+        // alwaysOnTop: true,
+        // focusable: false,
+    })
+
+
+    // Load app index page.
+    playerWindow.loadURL(url.format({
+        pathname: path.join(__dirname, './player_window.html'),
+        protocol: 'file:',
+        slashes: true
+    }));
+
+    // Open the DevTools.
+    if (DEV_MODE)
+        playerWindow.webContents.openDevTools()
+
+    return playerWindow;
+}
+
+function isPlayerWindowShow() {
+    return playerWindow != null && !playerWindow.isDestroyed();
+}
+
+/**
+ * Electron Ready
+ */
 app.on('ready', () => {
 
-    // Development option
-    if (process.env.NODE_ENV && process.env.NODE_ENV.trim() === 'development') {
+    /**
+     * Development option
+     */
+    if (DEV_MODE) {
         devShortcut();
         devTool();
         console.log('Development Mode');
     }
 
-    // 
-    createWindow();
+    /**
+     * Creat Main Window
+     */
+    createMainWindow();
 
+    /**
+     * 
+     */
+    ipcMain.on('PLAYER_TEMPLATE', (event, arg) => {
+        if (isPlayerWindowShow()) {
+            playerWindow.webContents.send('TEMPLATE', arg);
+        }
+    })
+
+    /**
+     * 
+     */
+    ipcMain.on('PLAYER_CONTENT', (event, arg) => {
+
+        if (isPlayerWindowShow()) {
+            playerWindow.webContents.send('CONTENT', arg);
+        }
+    })
+
+    /**
+    * Toggle Player Show
+    */
+    ipcMain.on('PLAYER_TOGGLE', (event, arg) => {
+
+        if (!isPlayerWindowShow()) {
+
+            // Show Player Window
+            let externalDisplay = getExternalDisplay();
+            if (externalDisplay)
+                playerWindow = creatPlayerWindow(externalDisplay.bounds);
+            else
+                playerWindow = creatPlayerWindow({ x: 0, y: 0, width: 500, height: 500 });
+
+            mainWindow.webContents.send('PLAYER_OPEN', '');
+
+            playerWindow.on('closed', function () {
+                playerWindow = null;
+                if (mainWindow)
+                    mainWindow.webContents.send('PLAYER_CLOSE', '');
+            })
+
+        } else if (playerWindow) {
+            // Destroy Player Window
+            playerWindow.destroy();
+        }
+    })
 })
 
 /**
- * 
+ * Cencel short before quit
  */
 app.on('will-quit', function () {
     globalShortcut.unregisterAll()
@@ -119,6 +221,6 @@ app.on('window-all-closed', function () {
  */
 app.on('activate', function () {
     if (mainWindow === null) {
-        createWindow()
+        createMainWindow()
     }
 })

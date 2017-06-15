@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 173);
+/******/ 	return __webpack_require__(__webpack_require__.s = 164);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -19958,14 +19958,13 @@ __WEBPACK_IMPORTED_MODULE_1_react_dom___default.a.render(__WEBPACK_IMPORTED_MODU
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_electron___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_electron__);
 
 
-const ipc = __WEBPACK_IMPORTED_MODULE_1_electron___default.a.ipcRenderer;
 
 class App extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            data: ''
+            content: ''
         };
     }
 
@@ -19973,9 +19972,13 @@ class App extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
         /**
          * Receive
          */
-        ipc.on('data', (event, arg) => {
-            this.setState({ data: arg });
-            console.log('Receive: ', arg);
+        __WEBPACK_IMPORTED_MODULE_1_electron__["ipcRenderer"].on('CONTENT', (event, arg) => {
+            this.setState({ content: arg });
+            console.log('On CONTENT: ', arg);
+        });
+
+        __WEBPACK_IMPORTED_MODULE_1_electron__["ipcRenderer"].on('TEMPLATE', (event, arg) => {
+            console.log('On TEMPLATE: ', 'Template');
         });
     }
 
@@ -19986,7 +19989,8 @@ class App extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
             __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                 'h1',
                 { id: 'display' },
-                this.state.data
+                'Time: ',
+                this.state.content
             )
         );
     }
@@ -19996,16 +20000,7 @@ class App extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 
 /***/ }),
 /* 163 */,
-/* 164 */,
-/* 165 */,
-/* 166 */,
-/* 167 */,
-/* 168 */,
-/* 169 */,
-/* 170 */,
-/* 171 */,
-/* 172 */,
-/* 173 */
+/* 164 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = __webpack_require__(160);

@@ -1,70 +1,5 @@
 import React from 'react';
-
-import path from 'path';
-import url from 'url';
-import Electron from 'electron';
-const BrowserWindow = Electron.remote.BrowserWindow
-const electronScreen = Electron.remote.screen
-const ipc = Electron.ipcRenderer
-
-let playerWindow
-
-function getExternalDisplay() {
-    var displays = electronScreen.getAllDisplays();
-    var externalDisplay = null;
-    for (var i in displays) {
-        if (displays[i].bounds.x != 0 || displays[i].bounds.y != 0) {
-            externalDisplay = displays[i];
-            break;
-        }
-    }
-
-    return externalDisplay;
-}
-
-function creatPlayerWindow(bounds) {
-
-    let playerWindow = new BrowserWindow({
-        title: 'Player Window',
-        x: bounds.x,
-        y: bounds.y,
-        width: bounds.width,
-        height: bounds.height,
-        // kiosk: true,
-        // frame: false,
-        // alwaysOnTop: true,
-        // focusable: false,
-    })
-
-
-    // and load the index.html of the app.
-    playerWindow.loadURL(url.format({
-        pathname: path.join(__dirname),
-        protocol: 'file:',
-        slashes: false
-    }));
-
-    console.log(url.format({
-        pathname: path.join(__dirname, '..', '..', '..', 'player_window.html'),
-        protocol: 'file:',
-        slashes: false
-    }));
-
-    console.log(path.join(__dirname));
-    console.log(path.join(__dirname, '..'));
-    console.log(path.join(__dirname, '..', '..'));
-    // console.log(path.resolve(__dirname));
-
-    // Emitted when the window is closed.
-    playerWindow.on('closed', () => {
-        playerWindow = null;
-    })
-
-    playerWindow.webContents.openDevTools()
-
-    return playerWindow;
-}
-
+import Electron, { ipcRenderer as ipc } from 'electron';
 
 class App extends React.Component {
 
@@ -80,32 +15,26 @@ class App extends React.Component {
          * Sent test message
          */
         setInterval(() => {
-            if (playerWindow && !playerWindow.isDestroyed()) {
-                let nowTime = new Date().getTime();
-                playerWindow.webContents.send('data', nowTime);
-            }
+            let nowTime = new Date().getTime();
+            ipc.send('PLAYER_TEMPLATE', nowTime);
+            ipc.send('PLAYER_CONTENT', nowTime);
         }, 10)
+
+        /**
+         * 
+         */
+        ipc.on('PLAYER_OPEN', (event, arg) => {
+            console.log('On PLAYER_OPEN: ', 'Template');
+        });
+        ipc.on('PLAYER_CLOSE', (event, arg) => {
+            console.log('On PLAYER_CLOSE: ', 'Template');
+        });
+
     }
 
     handleBtnClick() {
-        console.log('playerWindow.. ', playerWindow);
-
-        if (!playerWindow || playerWindow.isDestroyed()) {
-
-            // Show Player Window
-            let externalDisplay = getExternalDisplay();
-            if (externalDisplay)
-                playerWindow = creatPlayerWindow(externalDisplay.bounds);
-            else
-                /**
-                 * test
-                 */
-                playerWindow = creatPlayerWindow({ x: 0, y: 0, width: 500, height: 500 });
-
-        } else {
-            // Destroy Player Window
-            playerWindow.destroy();
-        }
+        console.log('click')
+        ipc.send('PLAYER_TOGGLE', '');
     }
 
     render() {
