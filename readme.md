@@ -39,9 +39,14 @@
 - 新家人名單(小組)
 - 新家人名單(集中)
 
+# Template
+所有畫面都是Template填入Content來產生.
+
 # 待確認
 
 ## 可否動態載入組件？
 是，在function中必須用require而不能用import，且必須是 export default
+
 ## 可否動態更換組件？ 
 是，只要prop一樣，熱切換是沒問題的
+## 剛選完Template後，Content還是舊的，會出現錯誤？

@@ -19960,13 +19960,40 @@ const Test1 = props => __WEBPACK_IMPORTED_MODULE_0_react___default.a.createEleme
     'div',
     null,
     __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-        'button',
-        { onClick: () => {
-                let nowTime = new Date().getTime();
-                props.selectTemplate('Test1');
-                props.updateContent('' + nowTime);
-            } },
-        'Update'
+        'ul',
+        null,
+        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+            'li',
+            { onClick: () => {
+                    props.selectTemplate('Template1');
+                    props.updateContent({ A: '第一句' });
+                } },
+            '\u7B2C\u4E00\u53E5'
+        ),
+        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+            'li',
+            { onClick: () => {
+                    props.selectTemplate('Template1');
+                    props.updateContent({ A: '第二句' });
+                } },
+            '\u7B2C\u4E8C\u53E5'
+        ),
+        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+            'li',
+            { onClick: () => {
+                    props.selectTemplate('Template1');
+                    props.updateContent({ A: '第三句' });
+                } },
+            '\u7B2C\u4E09\u53E5'
+        ),
+        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+            'li',
+            { onClick: () => {
+                    props.selectTemplate('Template1');
+                    props.updateContent({ A: '第四句' });
+                } },
+            '\u7B2C\u56DB\u53E5'
+        )
     )
 );
 
@@ -19986,13 +20013,40 @@ const Test2 = props => __WEBPACK_IMPORTED_MODULE_0_react___default.a.createEleme
     'div',
     null,
     __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-        'button',
-        { onClick: () => {
-                let nowTime = new Date().getTime();
-                props.selectTemplate('Test2');
-                props.updateContent('' + nowTime);
-            } },
-        'Update'
+        'ul',
+        null,
+        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+            'li',
+            { onClick: () => {
+                    props.selectTemplate('Template2');
+                    props.updateContent({ A: '第一句' });
+                } },
+            '\u7B2C\u4E00\u53E5'
+        ),
+        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+            'li',
+            { onClick: () => {
+                    props.selectTemplate('Template2');
+                    props.updateContent({ A: '第二句' });
+                } },
+            '\u7B2C\u4E8C\u53E5'
+        ),
+        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+            'li',
+            { onClick: () => {
+                    props.selectTemplate('Template3');
+                    props.updateContent({ A: '第三句', B: '第四句' });
+                } },
+            '\u4E09\u3001\u56DB\u53E5'
+        ),
+        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+            'li',
+            { onClick: () => {
+                    props.selectTemplate('Template3');
+                    props.updateContent({ A: '第五句', B: '第六句' });
+                } },
+            '\u4E94\u3001\u516D\u53E5'
+        )
     )
 );
 
@@ -20037,7 +20091,7 @@ class App extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
     }
 
     updateContent(content) {
-        __WEBPACK_IMPORTED_MODULE_1_electron__["ipcRenderer"].send('PLAYER_CONTENT', content);
+        __WEBPACK_IMPORTED_MODULE_1_electron__["ipcRenderer"].send('PLAYER_CONTENT', JSON.stringify(content));
     }
 
     handlePlayToggle() {
@@ -20047,8 +20101,9 @@ class App extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 
     render() {
 
-        // Hot require director components
+        // Hot require Director components
         let Director = __webpack_require__(167)("./" + this.state.director + '.jsx').default;
+        if (!Director) throw new Error('Director Load Error');
 
         /**
          * 
@@ -20062,7 +20117,11 @@ class App extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
                 __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                     'div',
                     null,
-                    'Media List'
+                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                        'h2',
+                        null,
+                        'Media List'
+                    )
                 ),
                 __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                     'div',
@@ -20075,14 +20134,14 @@ class App extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
                             { onClick: () => {
                                     this.setState({ director: 'Test1' });
                                 } },
-                            'Test1'
+                            'Song1'
                         ),
                         __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                             'li',
                             { onClick: () => {
                                     this.setState({ director: 'Test2' });
                                 } },
-                            'Test2'
+                            'Song2'
                         )
                     )
                 ),
@@ -20102,7 +20161,11 @@ class App extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
                 __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                     'div',
                     null,
-                    this.state.director
+                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                        'h1',
+                        null,
+                        this.state.director
+                    )
                 ),
                 __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                     'div',
@@ -20113,9 +20176,16 @@ class App extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
                     'div',
                     null,
                     __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                        'button',
+                        'h2',
                         null,
-                        'FN-1'
+                        'Function'
+                    ),
+                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                        'button',
+                        { onClick: () => {
+                                this.selectTemplate('Black');
+                            } },
+                        'Black'
                     ),
                     __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                         'button',

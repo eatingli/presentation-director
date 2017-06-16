@@ -29,7 +29,7 @@ class App extends React.Component {
     }
 
     updateContent(content) {
-        ipc.send('PLAYER_CONTENT', content);
+        ipc.send('PLAYER_CONTENT', JSON.stringify(content));
     }
 
     handlePlayToggle() {
@@ -39,8 +39,9 @@ class App extends React.Component {
 
     render() {
 
-        // Hot require director components
+        // Hot require Director components
         let Director = require('../components/' + this.state.director + '.jsx').default
+        if (!Director) throw new Error('Director Load Error');
 
         /**
          * 
@@ -52,13 +53,15 @@ class App extends React.Component {
                 <div>
 
                     {/* Media List Title */}
-                    <div>Media List</div>
+                    <div>
+                        <h2>Media List</h2>
+                    </div>
 
                     {/* Media List */}
                     <div>
                         <ul>
-                            <li onClick={() => { this.setState({ director: 'Test1' }) }}>Test1</li>
-                            <li onClick={() => { this.setState({ director: 'Test2' }) }}>Test2</li>
+                            <li onClick={() => { this.setState({ director: 'Test1' }) }}>Song1</li>
+                            <li onClick={() => { this.setState({ director: 'Test2' }) }}>Song2</li>
                         </ul>
                     </div>
 
@@ -73,7 +76,7 @@ class App extends React.Component {
 
                     {/* Media Title */}
                     <div>
-                        {this.state.director}
+                        <h1>{this.state.director}</h1>
                     </div>
 
                     {/* Director */}
@@ -83,7 +86,8 @@ class App extends React.Component {
 
                     {/* Function Row */}
                     <div>
-                        <button>FN-1</button>
+                        <h2>Function</h2>
+                        <button onClick={() => { this.selectTemplate('Black') }}>Black</button>
                         <button>FN-2</button>
                         <button>FN-3</button>
                         <button>FN-4</button>

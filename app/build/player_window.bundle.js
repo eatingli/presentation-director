@@ -19961,12 +19961,20 @@ __WEBPACK_IMPORTED_MODULE_1_react_dom___default.a.render(__WEBPACK_IMPORTED_MODU
 
 
 
+// const Template = (props) => (
+//     <div>
+//         <h1>Template 1</h1>
+//         <p>Content: {props.content}</p>
+//     </div>
+// )
+// const Template = require('../templates/Template1.jsx').default
+
 class App extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            template: '',
+            template: 'Black',
             content: ''
         };
     }
@@ -19976,31 +19984,29 @@ class App extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
          * Receive
          */
         __WEBPACK_IMPORTED_MODULE_1_electron__["ipcRenderer"].on('CONTENT', (event, arg) => {
-            this.setState({ content: arg });
-            console.log('On CONTENT: ', arg);
+            this.setState({ content: JSON.parse(arg) });
+            console.log('Content: ', arg);
         });
 
         __WEBPACK_IMPORTED_MODULE_1_electron__["ipcRenderer"].on('TEMPLATE', (event, arg) => {
-            this.setState({ template: arg });
-            console.log('On TEMPLATE: ', 'Template');
+            if (this.state.template !== arg) this.setState({ template: arg });
+            console.log('Template: ', arg);
         });
     }
 
     render() {
+
+        // Hot require Template components
+        let Template = __webpack_require__(173)("./" + this.state.template + '.jsx').default;
+        if (!Template) throw new Error('Template Load Error');
+
+        /**
+         * 
+         */
         return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
             'div',
             null,
-            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                'h1',
-                null,
-                this.state.template
-            ),
-            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                'p',
-                null,
-                'Time: ',
-                this.state.content
-            )
+            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(Template, { content: this.state.content })
         );
     }
 }
@@ -20014,6 +20020,143 @@ class App extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 
 module.exports = __webpack_require__(160);
 
+
+/***/ }),
+/* 167 */,
+/* 168 */,
+/* 169 */,
+/* 170 */,
+/* 171 */,
+/* 172 */,
+/* 173 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var map = {
+	"./Black.jsx": 178,
+	"./Template1.jsx": 175,
+	"./Template2.jsx": 176,
+	"./Template3.jsx": 177
+};
+function webpackContext(req) {
+	return __webpack_require__(webpackContextResolve(req));
+};
+function webpackContextResolve(req) {
+	var id = map[req];
+	if(!(id + 1)) // check for number or string
+		throw new Error("Cannot find module '" + req + "'.");
+	return id;
+};
+webpackContext.keys = function webpackContextKeys() {
+	return Object.keys(map);
+};
+webpackContext.resolve = webpackContextResolve;
+module.exports = webpackContext;
+webpackContext.id = 173;
+
+/***/ }),
+/* 174 */,
+/* 175 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react__ = __webpack_require__(51);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_react__);
+
+
+const Template = props => __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+    'div',
+    null,
+    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+        'h1',
+        null,
+        'Template 1'
+    ),
+    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+        'p',
+        null,
+        'Content: ',
+        props.content.A
+    )
+);
+
+/* harmony default export */ __webpack_exports__["default"] = (Template);
+
+/***/ }),
+/* 176 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react__ = __webpack_require__(51);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_react__);
+
+
+const Template = props => __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+    'div',
+    null,
+    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+        'h1',
+        null,
+        'Template 2'
+    ),
+    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+        'p',
+        null,
+        'Content: ',
+        props.content.A
+    )
+);
+
+/* harmony default export */ __webpack_exports__["default"] = (Template);
+
+/***/ }),
+/* 177 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react__ = __webpack_require__(51);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_react__);
+
+
+const Template = props => __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+    'div',
+    null,
+    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+        'h1',
+        null,
+        'Template 3'
+    ),
+    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+        'p',
+        null,
+        'ContentA: ',
+        props.content.A
+    ),
+    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+        'p',
+        null,
+        'ContentB: ',
+        props.content.B
+    )
+);
+
+/* harmony default export */ __webpack_exports__["default"] = (Template);
+
+/***/ }),
+/* 178 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react__ = __webpack_require__(51);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_react__);
+
+
+const Template = props => __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('div', null);
+
+/* harmony default export */ __webpack_exports__["default"] = (Template);
 
 /***/ })
 /******/ ]);
