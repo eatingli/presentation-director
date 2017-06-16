@@ -6,6 +6,7 @@ class App extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            template: '',
             content: ''
         }
     }
@@ -20,6 +21,7 @@ class App extends React.Component {
         });
 
         ipc.on('TEMPLATE', (event, arg) => {
+            this.setState({ template: arg });
             console.log('On TEMPLATE: ', 'Template');
         });
     }
@@ -27,7 +29,8 @@ class App extends React.Component {
     render() {
         return (
             <div>
-                <h1 id="display">Time: {this.state.content}</h1>
+                <h1>{this.state.template}</h1>
+                <p>Time: {this.state.content}</p>
             </div>
         )
     }

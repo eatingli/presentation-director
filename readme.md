@@ -20,3 +20,28 @@
 ## Player Window
     on TEMPLATE
     on CONTENT
+
+# Directing Console
+
+配置與當前選擇媒體(Media)對應的 Director
+
+## Director
+獨立處理**編輯**和**指揮**，用React的元件來鑲嵌，透過檔名來動態載入對應實例。
+
+    // Props
+    selectTemplate(template)
+    updateContent(content)
+    save(newDate)
+
+## 預計的 Director
+- 歌詞主畫面
+- 歌詞提示幕
+- 新家人名單(小組)
+- 新家人名單(集中)
+
+# 待確認
+
+## 可否動態載入組件？
+是，在function中必須用require而不能用import，且必須是 export default
+## 可否動態更換組件？ 
+是，只要prop一樣，熱切換是沒問題的
