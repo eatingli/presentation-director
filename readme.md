@@ -49,4 +49,12 @@
 
 ## 可否動態更換組件？ 
 是，只要prop一樣，熱切換是沒問題的
+
 ## 剛選完Template後，Content還是舊的，會出現錯誤？
+收到Template Update後，判定實際上是否有變化，沒變化則視為無效，有變化則把Content也清空
+
+## 上述如何實作？ 如果控制端同時發送selectTemplate和updateContent，不能確定哪個先觸發，這樣有可能收到新Content後馬上被清除
+...
+
+## 初始狀態所套用的Template？
+...

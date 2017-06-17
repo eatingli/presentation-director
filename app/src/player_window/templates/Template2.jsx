@@ -2,8 +2,9 @@ import React from 'react';
 
 const Template = (props) => (
     <div>
-        <h1>Template 2</h1>
-        <p>Content: {props.content.A}</p>
+        <h1>Template Multi</h1>
+        <p>ContentA: {props.content.A}</p>
+        <p>ContentB: {props.content.B}</p>
     </div>
 )
 

@@ -6,7 +6,7 @@ class App extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            director: 'Test1',
+            director: 'Song1',
         }
 
         this.selectTemplate = this.selectTemplate.bind(this);
@@ -16,10 +16,10 @@ class App extends React.Component {
     componentDidMount() {
 
         ipc.on('PLAYER_OPEN', (event, arg) => {
-            console.log('On PLAYER_OPEN: ', 'Template');
+            console.log('On PLAYER_OPEN: ', arg);
         });
         ipc.on('PLAYER_CLOSE', (event, arg) => {
-            console.log('On PLAYER_CLOSE: ', 'Template');
+            console.log('On PLAYER_CLOSE: ', arg);
         });
 
     }
@@ -40,7 +40,7 @@ class App extends React.Component {
     render() {
 
         // Hot require Director components
-        let Director = require('../components/' + this.state.director + '.jsx').default
+        let Director = require('../directors/' + this.state.director + '.jsx').default
         if (!Director) throw new Error('Director Load Error');
 
         /**
@@ -60,8 +60,8 @@ class App extends React.Component {
                     {/* Media List */}
                     <div>
                         <ul>
-                            <li onClick={() => { this.setState({ director: 'Test1' }) }}>Song1</li>
-                            <li onClick={() => { this.setState({ director: 'Test2' }) }}>Song2</li>
+                            <li onClick={() => { this.setState({ director: 'Song1' }) }}>Song1</li>
+                            <li onClick={() => { this.setState({ director: 'Song2' }) }}>Song2</li>
                         </ul>
                     </div>
 

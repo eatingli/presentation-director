@@ -1,14 +1,6 @@
 import React from 'react';
 import Electron, { ipcRenderer as ipc } from 'electron';
 
-// const Template = (props) => (
-//     <div>
-//         <h1>Template 1</h1>
-//         <p>Content: {props.content}</p>
-//     </div>
-// )
-// const Template = require('../templates/Template1.jsx').default
-
 class App extends React.Component {
 
     constructor(props) {
@@ -29,8 +21,15 @@ class App extends React.Component {
         });
 
         ipc.on('TEMPLATE', (event, arg) => {
-            if (this.state.template !== arg)
-                this.setState({ template: arg });
+            // 判定Template實際上有無變化
+            if (this.state.template !== arg) {
+                this.setState({
+                    template: arg,
+                });
+            } else {
+
+            }
+
             console.log('Template: ', arg);
         });
     }

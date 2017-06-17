@@ -101,18 +101,30 @@ function getExternalDisplay() {
  */
 function creatPlayerWindow(bounds) {
 
-    let playerWindow = new BrowserWindow({
+
+    let config = {
         title: 'Player Window',
         x: bounds.x,
         y: bounds.y,
         width: bounds.width,
         height: bounds.height,
-        // kiosk: true,
-        // frame: false,
-        // alwaysOnTop: true,
-        // focusable: false,
-    })
+        kiosk: true,
+        frame: false,
+        alwaysOnTop: true,
+        focusable: false,
+    }
 
+    /**
+     * Dev
+     */
+    if (DEV_MODE) {
+        config.kiosk = false;
+        config.frame = true;
+        config.alwaysOnTop = false;
+        config.focusable = true;
+    }
+
+    let playerWindow = new BrowserWindow(config)
 
     // Load app index page.
     playerWindow.loadURL(url.format({
