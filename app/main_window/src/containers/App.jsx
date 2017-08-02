@@ -1,5 +1,5 @@
 import React from 'react';
-import Electron, { ipcRenderer as ipc } from 'electron';
+import ipc from '../service/ipc.js'
 
 class App extends React.Component {
 
@@ -14,27 +14,27 @@ class App extends React.Component {
     }
 
     componentDidMount() {
-
-        ipc.on('PLAYER_OPEN', (event, arg) => {
-            console.log('On PLAYER_OPEN: ', arg);
+        ipc.onPlayerOpen(() => {
+            console.log('On PLAYER_OPEN');
         });
-        ipc.on('PLAYER_CLOSE', (event, arg) => {
-            console.log('On PLAYER_CLOSE: ', arg);
+        ipc.onPlayerClose(() => {
+            console.log('On PLAYER_CLOSE');
         });
-
     }
 
     selectTemplate(template) {
-        ipc.send('PLAYER_TEMPLATE', template);
+        console.log('selectTemplate');
+        ipc.selectTemplate(template);
     }
 
     updateContent(content) {
-        ipc.send('PLAYER_CONTENT', JSON.stringify(content));
+        console.log('updateContent');
+        ipc.updateContent(JSON.stringify(content));
     }
 
-    handlePlayToggle() {
-        console.log('click')
-        ipc.send('PLAYER_TOGGLE', '');
+    handlePlayClick() {
+        console.log('handlePlayClick');
+        ipc.togglePlayer();
     }
 
     render() {
@@ -67,7 +67,7 @@ class App extends React.Component {
 
                     {/* Play Button */}
                     <div>
-                        <button onClick={this.handlePlayToggle.bind(this)}>Play</button>
+                        <button onClick={this.handlePlayClick.bind(this)}>Play</button>
                     </div>
                 </div>
 

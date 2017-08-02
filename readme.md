@@ -11,16 +11,6 @@
 
 因為 Webpack 路徑的關係，沒有讓 Main-Window 直接管理 Player-Window，而是透過 main.js 中介來操作，這也能將Electron視窗管理邏輯從React中分離。
 
-## Main Window
-    send PLAYER_TEMPLATE
-    send PLAYER_CONTENT
-    on PLAYER_OPEN
-    on PLAYER_CLOSE
-
-## Player Window
-    on TEMPLATE
-    on CONTENT
-
 # Directing Console
 
 配置與當前選擇媒體(Media)對應的 Director

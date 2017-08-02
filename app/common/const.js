@@ -1,0 +1,22 @@
+
+
+const IPC_MAIN_WINDOW = {
+    PLAYER_TEMPLATE: 'PLAYER_TEMPLATE',  // Send
+    PLAYER_CONTENT: 'PLAYER_CONTENT',    // Send
+    PLAYER_OPEN: 'PLAYER_OPEN',     // Receive    
+    PLAYER_CLOSE: 'PLAYER_CLOSE',   // Receive
+
+};
+
+const IPC_PLAYER_WINDOW = {
+    UPDATE_TEMPLATE: 'UPDATE_TEMPLATE',  // Receive    
+    UPDATE_CONTENT: 'UPDATE_CONTENT',    // Receive
+};
+
+
+const CONST = {
+    IPC_MAIN_WINDOW: IPC_MAIN_WINDOW,
+    IPC_PLAYER_WINDOW: IPC_PLAYER_WINDOW,
+}
+
+export default CONST

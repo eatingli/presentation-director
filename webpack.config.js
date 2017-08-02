@@ -15,16 +15,16 @@ const config = {
      * 每個Window也有獨立的JS檔
      */
     entry: {
-        main_window: ['./app/src/main_window/index.jsx'],
-        player_window: ['./app/src/player_window/index.jsx']
+        './app/main_window/build/bundle.js': './app/main_window/src/index.jsx',
+        './app/player_window/build/bundle.js': './app/player_window/src/index.jsx'
     },
 
     /**
      * 輸出到指定路徑，並用entry的key作為檔名
      */
     output: {
-        path: path.resolve(__dirname, './app/build'),
-        filename: '[name].bundle.js'
+        path: path.resolve(__dirname, './'),
+        filename: '[name]'
     },
 
     /**

@@ -64,7 +64,7 @@ function createMainWindow() {
 
     // Load app index page.
     mainWindow.loadURL(url.format({
-        pathname: path.join(__dirname, './main_window.html'),
+        pathname: path.join(__dirname, './main_window/index.html'),
         protocol: 'file:',
         slashes: true
     }))
@@ -128,7 +128,7 @@ function creatPlayerWindow(bounds) {
 
     // Load app index page.
     playerWindow.loadURL(url.format({
-        pathname: path.join(__dirname, './player_window.html'),
+        pathname: path.join(__dirname, './player_window/index.html'),
         protocol: 'file:',
         slashes: true
     }));
@@ -166,7 +166,7 @@ app.on('ready', () => {
     /**
      * 
      */
-    ipcMain.on('PLAYER_TEMPLATE', (event, arg) => {
+    ipcMain.on('SELECT_TEMPLATE', (event, arg) => {
         if (isPlayerWindowShow()) {
             playerWindow.webContents.send('TEMPLATE', arg);
         }
@@ -175,7 +175,7 @@ app.on('ready', () => {
     /**
      * 
      */
-    ipcMain.on('PLAYER_CONTENT', (event, arg) => {
+    ipcMain.on('UPDATE_CONTENT', (event, arg) => {
 
         if (isPlayerWindowShow()) {
             playerWindow.webContents.send('CONTENT', arg);
@@ -185,8 +185,8 @@ app.on('ready', () => {
     /**
     * Toggle Player Show
     */
-    ipcMain.on('PLAYER_TOGGLE', (event, arg) => {
-
+    ipcMain.on('TOGGLE_PLAYER', (event, arg) => {
+        
         if (!isPlayerWindowShow()) {
 
             // Show Player Window
