@@ -52,15 +52,23 @@ export default class SingleSong extends React.Component {
                 <div>
                     <ul>
                         <li onClick={() => {
-                            this.props.selectTemplate('Template1')
-                            this.props.updateContent({ A: this.state.song.title1 })
+                            this.props.selectTemplate('SingleSongTitle')
+                            this.props.updateContent({
+                                title1: this.state.song.title1,
+                                title2: this.state.song.title2,
+                                description1: this.state.song.description1,
+                                description2: this.state.song.description2
+                            })
                         }}>首頁：{this.state.song.title1} {this.state.song.title2}</li>
                         {
                             this.state.song.lyrics &&
                             this.state.song.lyrics.map((lyric, i) => (
                                 <li key={i} onClick={() => {
-                                    this.props.selectTemplate('Template1')
-                                    this.props.updateContent({ A: lyric.content1 })
+                                    this.props.selectTemplate('SingleSongLyrics')
+                                    this.props.updateContent({
+                                        content1: lyric.content1,
+                                        content2: lyric.content2
+                                    })
                                 }}>{lyric.content1} {lyric.tag ? `[${lyric.tag}]` : ''}</li>
                             ))
                         }

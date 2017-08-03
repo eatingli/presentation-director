@@ -1,10 +1,5 @@
 const Electron = require('electron')
-const {
-    app,
-    globalShortcut,
-    BrowserWindow,
-    ipcMain
-} = Electron
+const { app, globalShortcut, BrowserWindow, ipcMain } = Electron
 const DEV_MODE = process.env.NODE_ENV && process.env.NODE_ENV.trim() === 'development';
 const path = require('path')
 const url = require('url')
@@ -70,7 +65,7 @@ function createMainWindow() {
         width: 1000,
         height: 700
     })
-
+    
     // Load app index page.
     mainWindow.loadURL(url.format({
         pathname: path.join(__dirname, '../../main_window/index.html'),
@@ -197,7 +192,7 @@ app.on('ready', () => {
      */
     ipcMain.on(Const.IPC_CLINET.TOGGLE_PLAYER, (event, arg) => {
         console.log('on TOGGLE_PLAYER');
-        
+
         if (!isPlayerWindowShow()) {
 
             // Show Player Window

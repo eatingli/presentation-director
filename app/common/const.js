@@ -5,7 +5,3 @@ export class IPC_CLINET {
     static PLAYER_OPEN = 'PLAYER_OPEN';         // Receive    
     static PLAYER_CLOSE = 'PLAYER_CLOSE';       // Receive
 }
-
-export default class Const {
-    static IPC_CLINET = IPC_CLINET;
-}

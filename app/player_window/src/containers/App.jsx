@@ -7,7 +7,7 @@ class App extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            template: 'Black',
+            template: 'SingleSongTitle',
             content: ''
         }
     }
@@ -45,9 +45,7 @@ class App extends React.Component {
          * 
          */
         return (
-            <div>
-                <Template content={this.state.content} />
-            </div>
+            <Template content={this.state.content} />
         )
     }
 }

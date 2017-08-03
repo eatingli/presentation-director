@@ -4,11 +4,11 @@ const webpack = require('webpack');
 const config = {
 
     /**
-     * 開啟nodejs的__filename和__dirname
+     * 關閉nodejs的__filename和__dirname
      */
     node: {
-        __filename: true,
-        __dirname: true
+        __filename: false,
+        __dirname: false
     },
 
     /**
