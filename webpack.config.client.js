@@ -12,6 +12,11 @@ const config = {
     },
 
     /**
+     * target
+     */
+    target: 'electron-renderer',
+
+    /**
      * 每個Window也有獨立的JS檔
      */
     entry: {
@@ -32,32 +37,28 @@ const config = {
      * 此.jsx? 代表.js 或者 .jsx
      */
     module: {
-        rules: [
-            {
-                test: /\.jsx?$/,
-                exclude: /node_modules/,
-                use: {
-                    loader: 'babel-loader',
-                    options: {
-                        cacheDirectory: true
-                    }
+        rules: [{
+            test: /\.jsx?$/,
+            exclude: /node_modules/,
+            use: {
+                loader: 'babel-loader',
+                options: {
+                    cacheDirectory: true
                 }
-            },
-        ],
+            }
+        }, ],
     },
 
     /**
      * 排外的 Modules
      */
     externals: {
-        "electron": "require('electron')",
     },
 
     /**
      * 
      */
-    plugins: [
-    ]
+    plugins: []
 };
 
 module.exports = config;

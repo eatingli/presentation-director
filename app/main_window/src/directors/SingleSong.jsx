@@ -1,5 +1,5 @@
 import React from 'react';
-import SingleSongParser from '../service/single-song-parser.js';
+import SingleSongParser from '../service/single-song-parser.jsx';
 
 export default class SingleSong extends React.Component {
 

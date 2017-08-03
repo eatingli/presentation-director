@@ -1,5 +1,6 @@
 import React from 'react';
 import Electron, { ipcRenderer as ipc } from 'electron';
+import Ipc from '../service/ipc.jsx';
 
 class App extends React.Component {
 
@@ -15,22 +16,22 @@ class App extends React.Component {
         /**
          * Receive
          */
-        ipc.on('CONTENT', (event, arg) => {
-            this.setState({ content: JSON.parse(arg) });
-            console.log('Content: ', arg);
+        Ipc.onUpdateContent((content) => {
+            this.setState({ content: JSON.parse(content) });
+            console.log('Content: ', content);
         });
 
-        ipc.on('TEMPLATE', (event, arg) => {
+        Ipc.onSelectTemplate((template) => {
             // 判定Template實際上有無變化
-            if (this.state.template !== arg) {
+            if (this.state.template !== template) {
                 this.setState({
-                    template: arg,
+                    template: template,
                 });
             } else {
 
             }
 
-            console.log('Template: ', arg);
+            console.log('Template: ', template);
         });
     }
 

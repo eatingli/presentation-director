@@ -1,9 +1,15 @@
-
 const Electron = require('electron')
-const { app, globalShortcut, BrowserWindow, ipcMain } = Electron
+const {
+    app,
+    globalShortcut,
+    BrowserWindow,
+    ipcMain
+} = Electron
 const DEV_MODE = process.env.NODE_ENV && process.env.NODE_ENV.trim() === 'development';
 const path = require('path')
 const url = require('url')
+
+const Const = require('../../common/const.js');
 
 let mainWindow = null
 let playerWindow = null
@@ -60,11 +66,14 @@ function devShortcut() {
  */
 function createMainWindow() {
     // Create the browser window.
-    mainWindow = new BrowserWindow({ width: 1000, height: 700 })
+    mainWindow = new BrowserWindow({
+        width: 1000,
+        height: 700
+    })
 
     // Load app index page.
     mainWindow.loadURL(url.format({
-        pathname: path.join(__dirname, './main_window/index.html'),
+        pathname: path.join(__dirname, '../../main_window/index.html'),
         protocol: 'file:',
         slashes: true
     }))
@@ -128,7 +137,7 @@ function creatPlayerWindow(bounds) {
 
     // Load app index page.
     playerWindow.loadURL(url.format({
-        pathname: path.join(__dirname, './player_window/index.html'),
+        pathname: path.join(__dirname, '../../player_window/index.html'),
         protocol: 'file:',
         slashes: true
     }));
@@ -166,26 +175,28 @@ app.on('ready', () => {
     /**
      * 
      */
-    ipcMain.on('SELECT_TEMPLATE', (event, arg) => {
+    ipcMain.on(Const.IPC_CLINET.SELECT_TEMPLATE, (event, arg) => {
+        console.log('on SELECT_TEMPLATE');
         if (isPlayerWindowShow()) {
-            playerWindow.webContents.send('TEMPLATE', arg);
+            playerWindow.webContents.send(Const.IPC_CLINET.SELECT_TEMPLATE, arg);
         }
     })
 
     /**
      * 
      */
-    ipcMain.on('UPDATE_CONTENT', (event, arg) => {
-
+    ipcMain.on(Const.IPC_CLINET.UPDATE_CONTENT, (event, arg) => {
+        console.log('on UPDATE_CONTENT');
         if (isPlayerWindowShow()) {
-            playerWindow.webContents.send('CONTENT', arg);
+            playerWindow.webContents.send(Const.IPC_CLINET.UPDATE_CONTENT, arg);
         }
     })
 
     /**
-    * Toggle Player Show
-    */
-    ipcMain.on('TOGGLE_PLAYER', (event, arg) => {
+     * Toggle Player Show
+     */
+    ipcMain.on(Const.IPC_CLINET.TOGGLE_PLAYER, (event, arg) => {
+        console.log('on TOGGLE_PLAYER');
         
         if (!isPlayerWindowShow()) {
 
@@ -194,14 +205,19 @@ app.on('ready', () => {
             if (externalDisplay)
                 playerWindow = creatPlayerWindow(externalDisplay.bounds);
             else
-                playerWindow = creatPlayerWindow({ x: 0, y: 0, width: 500, height: 500 });
+                playerWindow = creatPlayerWindow({
+                    x: 0,
+                    y: 0,
+                    width: 500,
+                    height: 500
+                });
 
-            mainWindow.webContents.send('PLAYER_OPEN', '');
+            mainWindow.webContents.send(Const.IPC_CLINET.PLAYER_OPEN, '');
 
             playerWindow.on('closed', function () {
                 playerWindow = null;
                 if (mainWindow)
-                    mainWindow.webContents.send('PLAYER_CLOSE', '');
+                    mainWindow.webContents.send(Const.IPC_CLINET.PLAYER_CLOSE, '');
             })
 
         } else if (playerWindow) {

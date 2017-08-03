@@ -3,11 +3,12 @@
   "version": "1.0.0",
   "description": "",
   "author": "Eating Li <suwako.www@gmail.com>",
-  "main": "./app/main.js",
+  "main": "./app/electron/build/bundle.js",
   "scripts": {
     "build": "electron-packager . --asar=true --ignore=node_modules/electron-* --ignore=app/src --overwrite --version=1.6.11",
     "build-win": "npm run build --  --platform=win32 --arch=x64 ",
-    "dev": "set NODE_ENV=development && webpack --config webpack.config.js --watch",
+    "dev-server": "set NODE_ENV=development && webpack --config webpack.config.server.js --watch",
+    "dev-client": "set NODE_ENV=development && webpack --config webpack.config.client.js --watch",
     "prod": "set NODE_ENV=production && webpack --config webpack.config.js -p",
     "start-dev": "set NODE_ENV=development && electron .",
     "start": "set NODE_ENV=production && electron ."

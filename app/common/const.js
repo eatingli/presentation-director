@@ -1,22 +1,11 @@
-
-
-const IPC_MAIN_WINDOW = {
-    PLAYER_TEMPLATE: 'PLAYER_TEMPLATE',  // Send
-    PLAYER_CONTENT: 'PLAYER_CONTENT',    // Send
-    PLAYER_OPEN: 'PLAYER_OPEN',     // Receive    
-    PLAYER_CLOSE: 'PLAYER_CLOSE',   // Receive
-
-};
-
-const IPC_PLAYER_WINDOW = {
-    UPDATE_TEMPLATE: 'UPDATE_TEMPLATE',  // Receive    
-    UPDATE_CONTENT: 'UPDATE_CONTENT',    // Receive
-};
-
-
-const CONST = {
-    IPC_MAIN_WINDOW: IPC_MAIN_WINDOW,
-    IPC_PLAYER_WINDOW: IPC_PLAYER_WINDOW,
+export class IPC_CLINET {
+    static SELECT_TEMPLATE = 'SELECT_TEMPLATE'; // Send / Receive
+    static UPDATE_CONTENT = 'UPDATE_CONTENT';   // Send / Receive
+    static TOGGLE_PLAYER = 'TOGGLE_PLAYER';     // Send
+    static PLAYER_OPEN = 'PLAYER_OPEN';         // Receive    
+    static PLAYER_CLOSE = 'PLAYER_CLOSE';       // Receive
 }
 
-export default CONST
+export default class Const {
+    static IPC_CLINET = IPC_CLINET;
+}

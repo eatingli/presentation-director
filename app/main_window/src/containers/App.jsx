@@ -1,5 +1,5 @@
 import React from 'react';
-import ipc from '../service/ipc.js'
+import Ipc from '../service/ipc.jsx'
 
 class App extends React.Component {
 
@@ -14,27 +14,27 @@ class App extends React.Component {
     }
 
     componentDidMount() {
-        ipc.onPlayerOpen(() => {
+        Ipc.onPlayerOpen(() => {
             console.log('On PLAYER_OPEN');
         });
-        ipc.onPlayerClose(() => {
+        Ipc.onPlayerClose(() => {
             console.log('On PLAYER_CLOSE');
         });
     }
 
     selectTemplate(template) {
         console.log('selectTemplate');
-        ipc.selectTemplate(template);
+        Ipc.selectTemplate(template);
     }
 
     updateContent(content) {
         console.log('updateContent');
-        ipc.updateContent(JSON.stringify(content));
+        Ipc.updateContent(JSON.stringify(content));
     }
 
     handlePlayClick() {
         console.log('handlePlayClick');
-        ipc.togglePlayer();
+        Ipc.togglePlayer();
     }
 
     render() {
