@@ -1,14 +1,28 @@
 /**
  * 
  */
-exports.default = class SingleSongParser {
+export default class SingleSongParser {
 
     constructor() {
+        this.lineSpliter = '\n';
         this.title1 = '';
         this.title2 = '';
         this.description1 = '';
         this.description2 = '';
         this.lyrics = [];
+    }
+
+    /**
+     * 回傳 Song 物件
+     */
+    getSong() {
+        return {
+            title1: this.title1,
+            title2: this.title2,
+            description1: this.description1,
+            description2: this.description2,
+            lyrics: this.lyrics
+        }
     }
 
     /**
@@ -20,7 +34,7 @@ exports.default = class SingleSongParser {
             this.title1 = temp[0].trim();
             this.title2 = temp[1].trim();
         } else {
-            this.title1 = titleStr.trim();
+            this.title1 = str.trim();
         }
     }
 
@@ -28,7 +42,7 @@ exports.default = class SingleSongParser {
      * 描述
      */
     parseDescription(str) {
-        let descriptions = str.split('\r\n');
+        let descriptions = str.split(this.lineSpliter);
         this.description1 = descriptions[0];
         this.description2 = descriptions.length > 1 ? descriptions[1] : '';
     }
@@ -39,7 +53,7 @@ exports.default = class SingleSongParser {
     parseLyrics(str) {
 
         this.lyrics = [];
-        let rows = str.split('\r\n');
+        let rows = str.split(this.lineSpliter);
         rows.forEach((row) => {
 
             // 去除空白

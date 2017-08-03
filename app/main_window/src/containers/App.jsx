@@ -6,7 +6,7 @@ class App extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            director: 'Song1',
+            director: 'SingleSong',
         }
 
         this.selectTemplate = this.selectTemplate.bind(this);
