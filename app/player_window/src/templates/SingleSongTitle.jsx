@@ -43,7 +43,7 @@ const Styles = {
         display: 'flex',
         flexDirection: 'column',
 
-        fontSize: '3em',
+        fontSize: '4em',
         color: '#FFFFFF',
         textShadow: '0 0 7px #6060ff, 0 0 7px #6060ff, 0 0 7px #6060ff',
         fontFamily: 'NotoSansTC, Roboto',
@@ -64,7 +64,7 @@ const Styles = {
         lineHeight: '1em',
     },
     description: {
-        margin: 'auto 0px 27px 0px',
+        margin: 'auto 0px 60px 0px',
         display: 'flex',
         flexDirection: 'column',
     },

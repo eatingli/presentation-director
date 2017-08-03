@@ -60,8 +60,8 @@ class App extends React.Component {
                     {/* Media List */}
                     <div>
                         <ul>
-                            <li onClick={() => { this.setState({ director: 'Song1' }) }}>Song1</li>
-                            <li onClick={() => { this.setState({ director: 'Song2' }) }}>Song2</li>
+                            <li>Song1</li>
+                            <li>Song2</li>
                         </ul>
                     </div>
 

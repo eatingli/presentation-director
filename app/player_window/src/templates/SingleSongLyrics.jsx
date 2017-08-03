@@ -37,15 +37,15 @@ const Styles = {
         margin: 'auto 0px 0px 0px',
         display: 'flex',
         flexDirection: 'column',
-        fontSize: '4.5em',
+        fontSize: '5em',
         textAlign: 'center',
         lineHeight: '1.5em',
     },
     content2: {
-        margin: '0 0px 50px 0px',
+        margin: '0px 0px 80px 0px',
         display: 'flex',
         flexDirection: 'column',
-        fontSize: '3em',
+        fontSize: '3.3em',
         textAlign: 'center',
         lineHeight: '1em',
     }
