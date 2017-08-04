@@ -170,27 +170,27 @@ app.on('ready', () => {
     /**
      * 
      */
-    ipcMain.on(Const.IPC_CLINET.SELECT_TEMPLATE, (event, arg) => {
+    ipcMain.on(Const.IPC.SELECT_TEMPLATE, (event, arg) => {
         console.log('on SELECT_TEMPLATE');
         if (isPlayerWindowShow()) {
-            playerWindow.webContents.send(Const.IPC_CLINET.SELECT_TEMPLATE, arg);
+            playerWindow.webContents.send(Const.IPC.SELECT_TEMPLATE, arg);
         }
     })
 
     /**
      * 
      */
-    ipcMain.on(Const.IPC_CLINET.UPDATE_CONTENT, (event, arg) => {
+    ipcMain.on(Const.IPC.UPDATE_CONTENT, (event, arg) => {
         console.log('on UPDATE_CONTENT');
         if (isPlayerWindowShow()) {
-            playerWindow.webContents.send(Const.IPC_CLINET.UPDATE_CONTENT, arg);
+            playerWindow.webContents.send(Const.IPC.UPDATE_CONTENT, arg);
         }
     })
 
     /**
      * Toggle Player Show
      */
-    ipcMain.on(Const.IPC_CLINET.TOGGLE_PLAYER, (event, arg) => {
+    ipcMain.on(Const.IPC.TOGGLE_PLAYER, (event, arg) => {
         console.log('on TOGGLE_PLAYER');
 
         if (!isPlayerWindowShow()) {
@@ -207,12 +207,12 @@ app.on('ready', () => {
                     height: 500
                 });
 
-            mainWindow.webContents.send(Const.IPC_CLINET.PLAYER_OPEN, '');
+            mainWindow.webContents.send(Const.IPC.PLAYER_OPEN, '');
 
             playerWindow.on('closed', function () {
                 playerWindow = null;
                 if (mainWindow)
-                    mainWindow.webContents.send(Const.IPC_CLINET.PLAYER_CLOSE, '');
+                    mainWindow.webContents.send(Const.IPC.PLAYER_CLOSE, '');
             })
 
         } else if (playerWindow) {

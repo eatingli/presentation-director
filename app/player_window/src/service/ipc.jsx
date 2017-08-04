@@ -1,5 +1,5 @@
 import Electron, { ipcRenderer } from 'electron';
-import { IPC_CLINET as Const } from '../../../common/const.js';
+import { IPC as Const } from '../../../common/const.js';
 
 export default class Ipc {
 

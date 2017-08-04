@@ -21,7 +21,9 @@ class App extends React.Component {
             console.log('On PLAYER_CLOSE');
         });
     }
-
+    /**
+     * Director 調用
+     */
     selectTemplate(template) {
         console.log('selectTemplate');
         Ipc.selectTemplate(template);
@@ -32,6 +34,15 @@ class App extends React.Component {
         Ipc.updateContent(JSON.stringify(content));
     }
 
+    onLoadMeaia(callback) {
+        callback(media);
+    }
+
+    saveMedia(media) {
+
+    }
+
+    //
     handlePlayClick() {
         console.log('handlePlayClick');
         Ipc.togglePlayer();
