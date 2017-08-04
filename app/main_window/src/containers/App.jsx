@@ -15,7 +15,10 @@ class App extends React.Component {
 
         this.selectTemplate = this.selectTemplate.bind(this);
         this.updateContent = this.updateContent.bind(this);
+        this.onLoadMeaia = this.onLoadMeaia.bind(this);
+        this.saveMedia = this.saveMedia.bind(this);
         this.fileHelper = null;
+        this.loadMedia = () => { };
     }
 
     componentDidMount() {
@@ -69,11 +72,13 @@ class App extends React.Component {
     }
 
     onLoadMeaia(callback) {
-        callback(media);
+        this.loadMedia = callback
     }
 
-    saveMedia(media) {
-
+    saveMedia(name, media) {
+        console.log(media, '.......');
+        this.fileHelper.saveFile(name, media)
+            .then(() => console.log('save success!'));
     }
 
     /**
@@ -89,8 +94,14 @@ class App extends React.Component {
         Ipc.showPathDialog();
     }
 
-    handleMediaSelect(media) {
-        console.log('handlePlayClick()', media);
+    async handleMediaSelect(mediaName) {
+        console.log('handlePlayClick()', mediaName);
+        let data = await this.fileHelper.loadFile(mediaName);
+
+        let mediaData = JSON.parse(data);
+        if (mediaData && mediaData.director === 'SingleSong') {
+            this.loadMedia(mediaName, mediaData);
+        }
     }
 
     render() {
@@ -142,7 +153,10 @@ class App extends React.Component {
 
                     {/* Director */}
                     <div>
-                        <Director selectTemplate={this.selectTemplate} updateContent={this.updateContent} />
+                        <Director selectTemplate={this.selectTemplate}
+                            updateContent={this.updateContent}
+                            onLoadMeaia={this.onLoadMeaia}
+                            saveMedia={this.saveMedia} />
                     </div>
 
                     {/* Function Row */}

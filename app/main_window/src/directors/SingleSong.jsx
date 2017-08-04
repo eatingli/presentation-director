@@ -10,9 +10,23 @@ export default class SingleSong extends React.Component {
             rawDescription: '',
             rawLyrics: '',
             song: {},
+            mediaName: '',
         }
 
         this.editSong = this.editSong.bind(this);
+        this.saveSong = this.saveSong.bind(this);
+
+        this.props.onLoadMeaia((name, media) => {
+            console.log('onLoadMeaia()', media.data);
+            this.setState({
+                mediaName: name,
+                rawTitle: media.data.title || '',
+                rawDescription: media.data.description || '',
+                rawLyrics: media.data.lyrics || '',
+            });
+
+            this.editSong();
+        });
     }
 
     editSong() {
@@ -21,7 +35,23 @@ export default class SingleSong extends React.Component {
         parser.parseDescription(this.state.rawDescription);
         parser.parseLyrics(this.state.rawLyrics);
         this.setState({ song: parser.getSong() });
-        console.log(parser.getSong());
+        console.log('editSong()', parser.getSong());
+    }
+
+    saveSong() {
+
+        let mediaData = {};
+        mediaData.director = 'SingleSong';
+        mediaData.data = {
+            title: this.state.rawTitle,
+            description: this.state.rawDescription,
+            lyrics: this.state.rawLyrics,
+        }
+
+        console.log('saveSong()', mediaData);
+
+        if (this.state.mediaName && this.state.mediaName.length > 0)
+            this.props.saveMedia(this.state.mediaName, JSON.stringify(mediaData));
     }
 
     render() {
@@ -46,11 +76,12 @@ export default class SingleSong extends React.Component {
 
                     {/* 編輯按鈕 */}
                     <button onClick={this.editSong}>Edit</button>
-                    <button onClick={() => { }}>Save</button>
+                    <button onClick={this.saveSong}>Save</button>
                 </div>
 
                 {/* 控制介面 */}
                 <div>
+                    <h2>Direct Panel</h2>
                     <ul>
                         <li onClick={() => {
                             this.props.selectTemplate('SingleSongTitle')
@@ -60,7 +91,7 @@ export default class SingleSong extends React.Component {
                                 description1: this.state.song.description1,
                                 description2: this.state.song.description2
                             })
-                        }}>首頁：{this.state.song.title1} {this.state.song.title2}</li>
+                        }}>[{this.state.song.title1}]</li>
                         {
                             this.state.song.lyrics &&
                             this.state.song.lyrics.map((lyric, i) => (
