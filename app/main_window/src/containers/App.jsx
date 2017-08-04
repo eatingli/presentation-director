@@ -1,29 +1,60 @@
+import Path from 'path'
 import React from 'react';
 import Ipc from '../service/ipc.jsx'
+import FileHelper from '../service/file-helper.jsx'
 
 class App extends React.Component {
 
     constructor(props) {
         super(props);
         this.state = {
+            path: '',
+            mediaList: [],
             director: 'SingleSong',
         }
 
         this.selectTemplate = this.selectTemplate.bind(this);
         this.updateContent = this.updateContent.bind(this);
+        this.fileHelper = null;
     }
 
     componentDidMount() {
+
         Ipc.onPlayerOpen(() => {
             console.log('On PLAYER_OPEN');
         });
+
         Ipc.onPlayerClose(() => {
             console.log('On PLAYER_CLOSE');
         });
+
         Ipc.onSelectPath((path) => {
+            path = Path.normalize(path);
             console.log('On SELECT PATH', path);
+            this.setState({ path: path });
+
+            // FileHelper
+            if (this.fileHelper)
+                this.fileHelper.setDirPath(path);
+            else {
+                this.fileHelper = new FileHelper(path);
+                // this.fileHelper.watch((fileList) => {
+                //     console.log('file change!', fileList);
+                //     this.updateMediaList(fileList);
+                // });
+            }
+
+            this.fileHelper.updateFileList()
+                .then((fileList) => {
+                    this.updateMediaList(fileList);
+                });
         });
     }
+
+    updateMediaList(fileList) {
+        this.setState({ mediaList: fileList });
+    }
+
     /**
      * Director 調用
      */
@@ -45,7 +76,9 @@ class App extends React.Component {
 
     }
 
-    //
+    /**
+     * UI綁定
+     */
     handlePlayClick() {
         console.log('handlePlayClick()');
         Ipc.togglePlayer();
@@ -54,6 +87,10 @@ class App extends React.Component {
     handlePathClick() {
         console.log('handlePlayClick()');
         Ipc.showPathDialog();
+    }
+
+    handleMediaSelect(media) {
+        console.log('handlePlayClick()', media);
     }
 
     render() {
@@ -78,9 +115,13 @@ class App extends React.Component {
 
                     {/* Media List */}
                     <div>
+                        <p>Path: {this.state.path || 'null'}</p>
                         <ul>
-                            <li>Song1</li>
-                            <li>Song2</li>
+                            {
+                                this.state.mediaList.map((media, i) => (
+                                    <li key={i} onClick={() => { this.handleMediaSelect(media) }}>{media}</li>
+                                ))
+                            }
                         </ul>
                     </div>
 
