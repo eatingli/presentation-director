@@ -45,7 +45,8 @@ export default class SingleSong extends React.Component {
                     <br />
 
                     {/* 編輯按鈕 */}
-                    <button onClick={this.editSong}>編輯</button>
+                    <button onClick={this.editSong}>Edit</button>
+                    <button onClick={() => { }}>Save</button>
                 </div>
 
                 {/* 控制介面 */}

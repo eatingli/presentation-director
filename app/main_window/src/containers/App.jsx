@@ -20,17 +20,20 @@ class App extends React.Component {
         Ipc.onPlayerClose(() => {
             console.log('On PLAYER_CLOSE');
         });
+        Ipc.onSelectPath((path) => {
+            console.log('On SELECT PATH', path);
+        });
     }
     /**
      * Director 調用
      */
     selectTemplate(template) {
-        console.log('selectTemplate');
+        console.log('selectTemplate()');
         Ipc.selectTemplate(template);
     }
 
     updateContent(content) {
-        console.log('updateContent');
+        console.log('updateContent()');
         Ipc.updateContent(JSON.stringify(content));
     }
 
@@ -44,8 +47,13 @@ class App extends React.Component {
 
     //
     handlePlayClick() {
-        console.log('handlePlayClick');
+        console.log('handlePlayClick()');
         Ipc.togglePlayer();
+    }
+
+    handlePathClick() {
+        console.log('handlePlayClick()');
+        Ipc.showPathDialog();
     }
 
     render() {
@@ -78,6 +86,7 @@ class App extends React.Component {
 
                     {/* Play Button */}
                     <div>
+                        <button onClick={this.handlePathClick.bind(this)}>Path</button>
                         <button onClick={this.handlePlayClick.bind(this)}>Play</button>
                     </div>
                 </div>

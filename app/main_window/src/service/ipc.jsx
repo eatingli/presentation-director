@@ -1,5 +1,5 @@
 import Electron, { ipcRenderer } from 'electron';
-import {IPC as Const} from '../../../common/const.js';
+import { IPC as Const } from '../../../common/const.js';
 
 export default class Ipc {
 
@@ -27,4 +27,13 @@ export default class Ipc {
         });
     }
 
+    static showPathDialog() {
+        ipcRenderer.send(Const.SHOW_PATH_DIALOG, '');
+    }
+
+    static onSelectPath(callback) {
+        ipcRenderer.on(Const.SELECT_PATH, (event, path) => {
+            callback(path);
+        });
+    }
 }

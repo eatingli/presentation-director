@@ -5,6 +5,6 @@ export class IPC {
     static PLAYER_OPEN = 'PLAYER_OPEN';         // Receive    
     static PLAYER_CLOSE = 'PLAYER_CLOSE';       // Receive
 
-    static OPEN_PATH_DIALOG = 'OPEN_PATH_DIALOG';
+    static SHOW_PATH_DIALOG = 'SHOW_PATH_DIALOG';
     static SELECT_PATH = 'SELECT_PATH';
 }

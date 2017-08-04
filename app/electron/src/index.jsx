@@ -1,8 +1,8 @@
-const Electron = require('electron')
-const { app, globalShortcut, BrowserWindow, ipcMain } = Electron
+const Electron = require('electron');
+const { app, globalShortcut, BrowserWindow, ipcMain, dialog } = Electron;
 const DEV_MODE = process.env.NODE_ENV && process.env.NODE_ENV.trim() === 'development';
-const path = require('path')
-const url = require('url')
+const path = require('path');
+const url = require('url');
 
 const Const = require('../../common/const.js');
 
@@ -65,7 +65,7 @@ function createMainWindow() {
         width: 1000,
         height: 700
     })
-    
+
     // Load app index page.
     mainWindow.loadURL(url.format({
         pathname: path.join(__dirname, '../../main_window/index.html'),
@@ -148,6 +148,18 @@ function isPlayerWindowShow() {
     return playerWindow != null && !playerWindow.isDestroyed();
 }
 
+function showPathDialog(callback) {
+    if (!mainWindow) return;
+
+    let option = {
+        title: 'tttt',
+        defaultPath: './',
+        properties: ['openDirectory']
+    };
+
+    dialog.showOpenDialog(mainWindow, option, callback); // callback(filePaths)
+}
+
 /**
  * Electron Ready
  */
@@ -166,6 +178,16 @@ app.on('ready', () => {
      * Creat Main Window
      */
     createMainWindow();
+
+    /**
+     * 
+     */
+    ipcMain.on(Const.IPC.SHOW_PATH_DIALOG, (event, arg) => {
+        showPathDialog((filePaths) => {
+            if (filePaths)
+                mainWindow.webContents.send(Const.IPC.SELECT_PATH, filePaths[0]);
+        });
+    });
 
     /**
      * 
