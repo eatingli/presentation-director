@@ -57,6 +57,16 @@ function devShortcut() {
 }
 
 /**
+ * Setup production shortcut
+ */
+function prodShortcut() {
+    // Esc -> Close player
+    globalShortcut.register('Escape', () =>
+        playerWindow && playerWindow.destroy()
+    )
+}
+
+/**
  * Build up main window
  */
 function createMainWindow() {
@@ -172,6 +182,8 @@ app.on('ready', () => {
         devShortcut();
         devTool();
         console.log('Development Mode');
+    } else {
+        prodShortcut();
     }
 
     /**

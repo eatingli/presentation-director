@@ -34,6 +34,11 @@ export default class SingleSongTitle extends React.Component {
     }
 }
 
+// textShadow
+let textShadow = [];
+for (let i = 0; i < 15; i++)
+    textShadow.push('0 0 12px #3030aa');
+textShadow = textShadow.join(',');
 
 const Styles = {
     container: {
@@ -43,28 +48,29 @@ const Styles = {
         display: 'flex',
         flexDirection: 'column',
 
-        fontSize: '4em',
         color: '#FFFFFF',
-        textShadow: '0 0 7px #6060ff, 0 0 7px #6060ff, 0 0 7px #6060ff',
+        textShadow: textShadow,
         fontFamily: 'NotoSansTC, Roboto',
     },
     title1: {
         textAlign: 'right',
-        margin: '20px 20px 0px 8px',
+        margin: '30px 30px 0px 0px',
         padding: '0',
         // fontWeight: '700',
         letterSpacing: '3px',
-        lineHeight: '1em',
+        lineHeight: '1.1em',
+        fontSize: '4.0em',
     },
     title2: {
         textAlign: 'right',
-        margin: '0px 30px 0px 8px',
+        margin: '0px 30px 0px 0px',
         padding: '0',
-        textDecoration: 'underline',
-        lineHeight: '1em',
+        // textDecoration: 'underline',
+        lineHeight: '1.1em',
+        fontSize: '3.5em',
     },
     description: {
-        margin: 'auto 0px 60px 0px',
+        margin: 'auto 0px 40px 0px',
         display: 'flex',
         flexDirection: 'column',
     },
@@ -72,5 +78,7 @@ const Styles = {
         textAlign: 'center',
         margin: '0',
         padding: '0',
+        wordSpacing: '0.2em',
+        fontSize: '3.0em',
     }
 }

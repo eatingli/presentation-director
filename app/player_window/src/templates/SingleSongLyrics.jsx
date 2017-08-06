@@ -21,6 +21,12 @@ export default class SingleSongLyrics extends React.Component {
     }
 }
 
+// textShadow
+let textShadow = [];
+for (let i = 0; i < 20; i++)
+    textShadow.push('0 0 12px #3030aa');
+textShadow = textShadow.join(',');
+
 const Styles = {
     container: {
         width: '100%',
@@ -30,22 +36,23 @@ const Styles = {
         flexDirection: 'column',
 
         color: '#FFFFFF',
-        textShadow: '0 0 7px #6060ff, 0 0 7px #6060ff, 0 0 7px #6060ff',
+        textShadow: textShadow,
         fontFamily: 'NotoSansTC, Roboto',
     },
     content1: {
         margin: 'auto 0px 0px 0px',
         display: 'flex',
         flexDirection: 'column',
-        fontSize: '5em',
+        fontSize: '5.0em',
         textAlign: 'center',
         lineHeight: '1.5em',
+        wordSpacing: '0.2em',
     },
     content2: {
-        margin: '0px 0px 80px 0px',
+        margin: '0px 0px 70px 0px',
         display: 'flex',
         flexDirection: 'column',
-        fontSize: '3.3em',
+        fontSize: '4em',
         textAlign: 'center',
         lineHeight: '1em',
     }

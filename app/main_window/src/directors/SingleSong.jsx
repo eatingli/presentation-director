@@ -70,7 +70,7 @@ export default class SingleSong extends React.Component {
                     <br />
 
                     {/* 歌詞 */}
-                    <textarea rows="40" cols="70" value={this.state.rawLyrics} placeholder="歌詞"
+                    <textarea rows="32" cols="70" value={this.state.rawLyrics} placeholder="歌詞"
                         onChange={(e) => this.setState({ rawLyrics: e.target.value })}></textarea>
                     <br />
 
