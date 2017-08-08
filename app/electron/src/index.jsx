@@ -162,7 +162,7 @@ function showPathDialog(callback) {
     if (!mainWindow) return;
 
     let option = {
-        title: 'tttt',
+        title: 'Selete media folder path',
         defaultPath: './',
         properties: ['openDirectory']
     };

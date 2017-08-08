@@ -23,6 +23,9 @@ class App extends React.Component {
 
     componentDidMount() {
 
+        /**
+         * IPC 事件
+         */
         Ipc.onPlayerOpen(() => {
             console.log('On PLAYER_OPEN');
         });
