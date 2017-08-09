@@ -166,7 +166,7 @@ export default class App extends React.Component {
     render() {
 
         // Hot require Director components
-        let Director = require('../directors/' + this.state.director + '.jsx').default
+        let Director = require('../directors/' + this.state.director + '/index.jsx').default
         if (!Director) throw new Error('Director Load Error');
 
         // 
@@ -233,12 +233,10 @@ export default class App extends React.Component {
 
                     {/* Director */}
                     <div style={GridStyle.centerR}>
-                        {/* <div className="scroller" > */}
                         <Director selectTemplate={this.selectTemplate}
                             updateContent={this.updateContent}
                             onLoadMeaia={this.onLoadMeaia}
                             saveMedia={this.saveMedia} />
-                        {/* </div> */}
                         {/* 尚未選擇內容 */}
                     </div>
                 </div>

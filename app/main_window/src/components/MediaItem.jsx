@@ -51,6 +51,7 @@ const Style = {
         padding: '0px 0px 0px 18px',
         lineHeight: '33px',
         fontSize: '17px',
+        cursor: 'pointer',
     },
     focus: {
         backgroundColor: 'rgba(255, 255, 255, 0.04)'

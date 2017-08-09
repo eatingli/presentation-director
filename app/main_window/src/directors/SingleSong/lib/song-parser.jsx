@@ -52,6 +52,8 @@ export default class SingleSongParser {
      */
     parseLyrics(str) {
 
+        str = str.trim();
+
         this.lyrics = [];
         let rows = str.split(this.lineSpliter);
         rows.forEach((row) => {
