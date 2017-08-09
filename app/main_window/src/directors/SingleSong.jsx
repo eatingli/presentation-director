@@ -10,22 +10,23 @@ export default class SingleSong extends React.Component {
             rawDescription: '',
             rawLyrics: '',
             song: {},
-            mediaName: '',
+            filename: '',
         }
 
         this.editSong = this.editSong.bind(this);
         this.saveSong = this.saveSong.bind(this);
 
         this.props.onLoadMeaia((name, media) => {
-            console.log('onLoadMeaia()', media.data);
+            console.log('onLoadMeaia()');
             this.setState({
-                mediaName: name,
+                filename: name,
                 rawTitle: media.data.title || '',
                 rawDescription: media.data.description || '',
                 rawLyrics: media.data.lyrics || '',
             });
-
-            this.editSong();
+            setImmediate(() => {
+                this.editSong();
+            });
         });
     }
 
@@ -35,7 +36,6 @@ export default class SingleSong extends React.Component {
         parser.parseDescription(this.state.rawDescription);
         parser.parseLyrics(this.state.rawLyrics);
         this.setState({ song: parser.getSong() });
-        console.log('editSong()', parser.getSong());
     }
 
     saveSong() {
@@ -48,10 +48,10 @@ export default class SingleSong extends React.Component {
             lyrics: this.state.rawLyrics,
         }
 
-        console.log('saveSong()', mediaData);
+        console.log('saveSong()');
 
-        if (this.state.mediaName && this.state.mediaName.length > 0)
-            this.props.saveMedia(this.state.mediaName, JSON.stringify(mediaData));
+        if (this.state.filename && this.state.filename.length > 0)
+            this.props.saveMedia(this.state.filename, JSON.stringify(mediaData));
     }
 
     render() {

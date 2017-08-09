@@ -4,6 +4,46 @@
 <head>
     <meta charset="UTF-8">
     <title>Presentation Director</title>
+    <style>
+        @font-face {
+            font-family: NotoSansTC;
+            src: url(../common/res/NotoSansTC/NotoSansTC-Regular.otf);
+        }
+
+        @font-face {
+            font-family: Roboto;
+            src: url(../common/res/Roboto/Roboto-Regular.ttf);
+        }
+
+        html,
+        body {
+            font-family: 'Roboto', 'NotoSansTC', sans-serif;
+            margin: 0px;
+            padding: 0px;
+            color: #ffffff;
+        }
+
+        #root {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Scroller Style */
+        .scroller::-webkit-scrollbar {
+            width: 14px;
+        }
+
+        .scroller::-webkit-scrollbar-track {
+            box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.4);
+        }
+
+        .scroller::-webkit-scrollbar-thumb {
+            background-color: rgba(255, 255, 255, 0.2);
+            outline: 1px solid slategrey;
+        }
+    </style>
 </head>
 
 <body>
@@ -12,7 +52,6 @@
 </body>
 
 <script>
-
 </script>
 
 </html>

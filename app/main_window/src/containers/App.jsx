@@ -3,13 +3,20 @@ import React from 'react';
 import Ipc from '../service/ipc.jsx'
 import FileHelper from '../service/file-helper.jsx'
 
-class App extends React.Component {
+import { GridStyle, MainStyle } from '../styles/main.jsx';
+import MediaItem from '../components/MediaItem.jsx';
+import { IPC as Const } from '../../../common/const.js';
+export default class App extends React.Component {
 
     constructor(props) {
         super(props);
         this.state = {
             path: '',
+            fileList: [],
             mediaList: [],
+            selectedMedia: -1,
+            contextMenuTargetMedia: -1,
+
             director: 'SingleSong',
         }
 
@@ -19,6 +26,11 @@ class App extends React.Component {
         this.saveMedia = this.saveMedia.bind(this);
         this.fileHelper = null;
         this.loadMedia = () => { };
+
+        this.handleMediaListOptionClick = this.handleMediaListOptionClick.bind(this);
+        this.handleMediaItemContextMenu = this.handleMediaItemContextMenu.bind(this);
+        this.handleMediaItemClick = this.handleMediaItemClick.bind(this);
+
     }
 
     componentDidMount() {
@@ -44,21 +56,62 @@ class App extends React.Component {
                 this.fileHelper.setDirPath(path);
             else {
                 this.fileHelper = new FileHelper(path);
-                // this.fileHelper.watch((fileList) => {
-                //     console.log('file change!', fileList);
-                //     this.updateMediaList(fileList);
-                // });
             }
 
-            this.fileHelper.updateFileList()
-                .then((fileList) => {
-                    this.updateMediaList(fileList);
-                });
-        });
-    }
+            let fileHelper = this.fileHelper;
 
-    updateMediaList(fileList) {
-        this.setState({ mediaList: fileList });
+            this.fileHelper.updateFileList()
+                .then((files) => {
+
+                    let counter = files.length;
+                    let fileList = [];
+                    let mediaList = [];
+
+
+                    for (let file of files) {
+                        fileHelper.loadFile(file)
+                            .then((data) => {
+                                try {
+                                    let media = JSON.parse(data);
+                                    if (media && media.name && media.director) {
+                                        fileList.push(file);
+                                        mediaList.push(media);
+                                    }
+                                } catch (e) {
+                                    console.error(e);
+                                }
+
+                                if (--counter == 0)
+                                    this.setState({ fileList: fileList, mediaList: mediaList });
+                            })
+                    }
+                })
+
+        });
+
+        Ipc.onMeunMediaListSelectPath(() => {
+            Ipc.showPathDialog();
+        });
+
+        Ipc.onMenuMediaListNewMedia(() => {
+            console.log('onMenuMediaListNewMedia');
+        });
+
+        Ipc.onMenuMediaItemRename(() => {
+            console.log('onMenuMediaItemRename');
+        });
+
+        Ipc.onMenuMediaItemDelete(() => {
+            console.log('onMenuMediaItemDelete');
+        });
+
+        // test
+        // let mediaList = [];
+        // for (let i = 0; i < 40; i++) {
+        //     mediaList.push("歌名歌名" + i + " (主畫面)");
+        //     mediaList.push("歌名歌名" + i + " (提示幕)");
+        // }
+        // this.setState({ mediaList: mediaList });
     }
 
     /**
@@ -87,24 +140,27 @@ class App extends React.Component {
     /**
      * UI綁定
      */
-    handlePlayClick() {
-        console.log('handlePlayClick()');
+    handleLaunchClick() {
+        console.log('handleLaunchClick()');
         Ipc.togglePlayer();
     }
 
-    handlePathClick() {
-        console.log('handlePlayClick()');
-        Ipc.showPathDialog();
+    handleMediaListOptionClick() {
+        Ipc.showMenuMediaListOption();
     }
 
-    async handleMediaSelect(mediaName) {
-        console.log('handlePlayClick()', mediaName);
-        let data = await this.fileHelper.loadFile(mediaName);
+    handleMediaItemContextMenu(index) {
+        Ipc.showMenuMediaItem();
+        this.setState({ contextMenuTargetMedia: index });
+    }
 
-        let mediaData = JSON.parse(data);
-        if (mediaData && mediaData.director === 'SingleSong') {
-            this.loadMedia(mediaName, mediaData);
-        }
+    handleMediaItemClick(index) {
+        console.log('handleMediaItemClick()', index);
+        let filename = this.state.fileList[index];
+        let media = this.state.mediaList[index];
+
+        this.setState({ selectedMedia: index, director: media.director });
+        this.loadMedia(filename, media);
     }
 
     render() {
@@ -113,69 +169,98 @@ class App extends React.Component {
         let Director = require('../directors/' + this.state.director + '.jsx').default
         if (!Director) throw new Error('Director Load Error');
 
-        /**
-         * 
-         */
-        return (
-            <div>
+        // 
+        let mediaList = this.state.mediaList.map((media, i) => {
+            let title = media.name + ` (${media.director})`;
+            return (
+                <MediaItem key={i} title={title} selected={i == this.state.selectedMedia}
+                    onClick={(e) => this.handleMediaItemClick(i)}
+                    onContextMenu={(e) => this.handleMediaItemContextMenu(i)}
+                />
+            )
+        });
 
-                {/* Left Container */}
-                <div>
+
+        // pathStr
+        let pathStr = this.state.path || 'null';
+        if (pathStr.length > 20)
+            pathStr = pathStr.substring(0, 20) + '...';
+
+        // mediaName
+        let selectedMedia = this.state.mediaList[this.state.selectedMedia];
+        let mediaName = selectedMedia ? selectedMedia.name : 'Media Name';
+
+        return (
+            <div style={GridStyle.container}>
+
+                {/* Top */}
+                <div style={GridStyle.top}>
 
                     {/* Media List Title */}
-                    <div>
-                        <h2>Media List</h2>
+                    <div style={GridStyle.topL}>
+                        <div style={MainStyle.mediaListTitle}>
+                            Media List
+                            <span style={MainStyle.mediaFolderPath}>({pathStr})</span>
+                        </div>
+                        <div style={MainStyle.folderBtnRow}>
+                            <button style={MainStyle.folderBtn} onClick={this.handleMediaListOptionClick}>...</button>
+                        </div>
                     </div>
 
-                    {/* Media List */}
-                    <div>
-                        <p>Path: {this.state.path || 'null'}</p>
-                        <ul>
-                            {
-                                this.state.mediaList.map((media, i) => (
-                                    <li key={i} onClick={() => { this.handleMediaSelect(media) }}>{media}</li>
-                                ))
-                            }
-                        </ul>
-                    </div>
-
-                    {/* Play Button */}
-                    <div>
-                        <button onClick={this.handlePathClick.bind(this)}>Path</button>
-                        <button onClick={this.handlePlayClick.bind(this)}>Play</button>
+                    {/* Director Title */}
+                    <div style={GridStyle.topR}>
+                        <div style={MainStyle.mediaNameTitle}>
+                            {mediaName}
+                        </div>
+                        <div style={MainStyle.topBtnRow}>
+                            <button style={MainStyle.topBtn}>Fn1</button>
+                            <button style={MainStyle.topBtn}>Fn2</button>
+                            <button style={MainStyle.topBtn}>Fn3</button>
+                            <button style={MainStyle.topBtn}>Fn4</button>
+                        </div>
                     </div>
                 </div>
 
-                {/* Right Container */}
-                <div>
+                {/* Center */}
+                <div style={GridStyle.center}>
 
-                    {/* Media Title */}
-                    <div>
-                        <h1>{this.state.director}</h1>
+                    {/* Media List */}
+                    <div style={GridStyle.centerL}>
+                        <ul className="scroller" style={MainStyle.mediaList}>
+                            {mediaList}
+                        </ul>
                     </div>
 
                     {/* Director */}
-                    <div>
+                    <div style={GridStyle.centerR}>
+                        {/* <div className="scroller" > */}
                         <Director selectTemplate={this.selectTemplate}
                             updateContent={this.updateContent}
                             onLoadMeaia={this.onLoadMeaia}
                             saveMedia={this.saveMedia} />
-                    </div>
-
-                    {/* Function Row */}
-                    <div>
-                        <h2>Function</h2>
-                        <button onClick={() => { this.selectTemplate('Black') }}>Black</button>
-                        <button>FN-2</button>
-                        <button>FN-3</button>
-                        <button>FN-4</button>
+                        {/* </div> */}
+                        {/* 尚未選擇內容 */}
                     </div>
                 </div>
 
-            </div>
+                {/* Bottom */}
+                <div style={GridStyle.bottom}>
+
+                    {/* Launch Button */}
+                    <div style={GridStyle.bottomL}>
+                        <button style={MainStyle.launchBtn} onClick={this.handleLaunchClick}>Launch</button>
+                    </div>
+
+                    {/* Bottom Row */}
+                    <div style={GridStyle.bottomR}>
+                        <button style={MainStyle.fnBtn}>Fn1</button>
+                        <button style={MainStyle.fnBtn}>Fn2</button>
+                        <button style={MainStyle.fnBtn}>Fn3</button>
+                        <button style={MainStyle.fnBtn}>Fn4</button>
+                        <button style={MainStyle.fnBtn}>Fn5</button>
+                    </div>
+                </div>
+            </div >
         )
     }
 }
-
-
-export default App

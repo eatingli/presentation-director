@@ -5,6 +5,7 @@ const path = require('path');
 const url = require('url');
 
 const Const = require('../../common/const.js');
+import { mediaListOptionMeun, mediaItemMeun } from './menu.jsx'
 
 let mainWindow = null
 let playerWindow = null
@@ -254,6 +255,18 @@ app.on('ready', () => {
             playerWindow.destroy();
         }
     })
+
+    ipcMain.on(Const.IPC.SHOW_MENU_MEDIA_ITEM, function (event) {
+        const win = BrowserWindow.fromWebContents(event.sender);
+        mediaItemMeun.popup(win);
+    })
+
+    ipcMain.on(Const.IPC.SHOW_MENU_MEDIA_LIST_OPTION, function (event) {
+        const win = BrowserWindow.fromWebContents(event.sender);
+        mediaListOptionMeun.popup(win);
+    })
+
+
 })
 
 /**
