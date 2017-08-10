@@ -1,6 +1,6 @@
 import React from 'react';
 import RowItem from './RowItem.jsx'
-import SingleSongParser from './lib/song-parser.jsx';
+import SongParser from './lib/song-parser.jsx';
 
 class Mode {
     static CTRL = 0;
@@ -16,13 +16,11 @@ export default class SingleSong extends React.Component {
             filename: '',
             media: {},
 
-            // 三個欄位
+            // 兩個欄位
             rawTitle: '',
-            rawDescription: '',
             rawLyrics: '',
 
             editTitle: '',
-            editDescription: '',
             editLyrics: '',
 
             // 解析過的資料
@@ -40,9 +38,8 @@ export default class SingleSong extends React.Component {
         this.editUI = this.editUI.bind(this);
         this.ctrlUI = this.ctrlUI.bind(this);
 
-        this.titleTemplate = this.titleTemplate.bind(this);
-        this.lyricsTemplate = this.lyricsTemplate.bind(this);
-
+        this.multiTemplate = this.multiTemplate.bind(this);
+        this.blackTemplate = this.blackTemplate.bind(this);
     }
 
     componentDidMount() {
@@ -51,6 +48,7 @@ export default class SingleSong extends React.Component {
          * Load song
          */
         this.props.onLoadMedia((filename, media) => {
+
             console.log('onLoadMedia()');
             this.setState({
                 // Refreash
@@ -60,7 +58,6 @@ export default class SingleSong extends React.Component {
                 filename: filename,
                 media: media,
                 rawTitle: media.data.title || '',
-                rawDescription: media.data.description || '',
                 rawLyrics: media.data.lyrics || '',
             });
             setImmediate(() => {
@@ -70,9 +67,8 @@ export default class SingleSong extends React.Component {
     }
 
     editSong() {
-        let parser = new SingleSongParser();
+        let parser = new SongParser();
         parser.parseTitle(this.state.rawTitle);
-        parser.parseDescription(this.state.rawDescription);
         parser.parseLyrics(this.state.rawLyrics);
         this.setState({ song: parser.getSong() });
     }
@@ -85,35 +81,34 @@ export default class SingleSong extends React.Component {
 
         let media = this.state.media;
         media.data.title = this.state.rawTitle;
-        media.data.description = this.state.rawDescription;
         media.data.lyrics = this.state.rawLyrics;
 
         this.props.saveMedia(this.state.filename, JSON.stringify(media));
     }
 
-    titleTemplate() {
-        this.props.selectTemplate('SingleSongTitle');
+    multiTemplate(part) {
+        console.log(part);
+        this.props.selectTemplate('MultiSong');
         this.props.updateContent({
-            title1: this.state.song.title1,
-            title2: this.state.song.title2,
-            description1: this.state.song.description1,
-            description2: this.state.song.description2
+            title: this.state.song.title,
+            content1: part[0] ? part[0].content : '',
+            content2: part[1] ? part[1].content : '',
+            content3: part[2] ? part[2].content : '',
+            content4: part[3] ? part[3].content : '',
         })
     }
 
-    lyricsTemplate(lyric) {
-        this.props.selectTemplate('SingleSongLyrics')
+    blackTemplate() {
+        this.props.selectTemplate('Color');
         this.props.updateContent({
-            content1: lyric.content1,
-            content2: lyric.content2
-        })
+            color: '#000000'
+        });
     }
 
     handleEdit() {
         this.setState({
             mode: Mode.EDIT,
             editTitle: this.state.rawTitle,
-            editDescription: this.state.rawDescription,
             editLyrics: this.state.rawLyrics,
         })
     }
@@ -126,7 +121,6 @@ export default class SingleSong extends React.Component {
         this.setState({
             mode: Mode.CTRL,
             rawTitle: this.state.editTitle,
-            rawDescription: this.state.editDescription,
             rawLyrics: this.state.editLyrics,
         })
         setImmediate(() => {
@@ -144,11 +138,6 @@ export default class SingleSong extends React.Component {
                 {/* 標題 */}
                 <input type="text" value={this.state.editTitle} placeholder="標題"
                     onChange={(e) => this.setState({ editTitle: e.target.value })} />
-                <br />
-
-                {/* 描述 */}
-                <textarea rows="2" cols="70" value={this.state.editDescription} placeholder="描述"
-                    onChange={(e) => this.setState({ editDescription: e.target.value })}></textarea>
                 <br />
 
                 {/* 歌詞 */}
@@ -170,30 +159,58 @@ export default class SingleSong extends React.Component {
     ctrlUI() {
 
         let song = this.state.song;
-        let title, lyrics;
+        let title, parts;
 
         // Check
-        if (song.title1 && song.lyrics.length > 0) {
+        if (song.title && song.parts && song.parts.length > 0) {
+
             title = (
                 <RowItem
-                    text={`[ ${song.title1} ]`}
+                    text={`[ ${song.title} ]`}
                     selected={this.state.selectedRow == 0}
                     onClick={() => {
-                        this.titleTemplate();
+                        {/* this.multiTemplate(song.parts[0]); */ }
                         this.setState({ selectedRow: 0 });
                     }} />
             )
 
-            lyrics = song.lyrics.map((lyric, i) => (
-                <RowItem
-                    key={i}
-                    text={`${lyric.content1} ${lyric.tag ? `[${lyric.tag}]` : ''}`}
-                    selected={this.state.selectedRow == i + 1}
-                    onClick={() => {
-                        this.lyricsTemplate(lyric);
-                        this.setState({ selectedRow: i + 1 });
-                    }} />
-            ))
+            let selectIndex = 0;
+            let key = 0;
+
+            parts = song.parts.map((part, i) => {
+
+                // Part
+                let p = part.map((lyric) => {
+                    let index = selectIndex;
+                    return (
+                        <RowItem
+                            key={key++}
+                            text={`${lyric.content} ${lyric.tag ? `[${lyric.tag}]` : ''}`}
+                            selected={this.state.selectedRow == index}
+                            onClick={() => {
+                                this.multiTemplate(part);
+                                this.setState({ selectedRow: index });
+                            }} />
+                    )
+                })
+                selectIndex++;
+
+                let index = selectIndex;
+                // 空白
+                p.push((
+                    <RowItem
+                        key={key++}
+                        text=""
+                        selected={this.state.selectedRow == index}
+                        onClick={() => {
+                            this.blackTemplate();
+                            this.setState({ selectedRow: index });
+                        }} />
+                ));
+                selectIndex++;
+
+                return p;
+            })
         }
 
 
@@ -201,7 +218,7 @@ export default class SingleSong extends React.Component {
             <div className="scroller">
                 <ul>
                     {title}
-                    {lyrics}
+                    {parts}
                 </ul>
                 <button onClick={this.handleEdit.bind(this)}>Edit</button>
             </div >
@@ -209,7 +226,6 @@ export default class SingleSong extends React.Component {
     }
 
     render() {
-
         switch (this.state.mode) {
             case Mode.EDIT:
                 return this.editUI();

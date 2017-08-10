@@ -34,7 +34,8 @@ const Styles = {
         background: '#000000',
         display: 'flex',
         flexDirection: 'column',
-
+        overflow: 'hidden',
+        
         color: '#FFFFFF',
         textShadow: textShadow,
         fontFamily: 'NotoSansTC, Roboto',
@@ -47,6 +48,7 @@ const Styles = {
         textAlign: 'center',
         lineHeight: '1.5em',
         wordSpacing: '0.2em',
+        whiteSpace: 'nowrap',
     },
     content2: {
         margin: '0px 0px 70px 0px',
@@ -55,5 +57,6 @@ const Styles = {
         fontSize: '4em',
         textAlign: 'center',
         lineHeight: '1em',
+        whiteSpace: 'nowrap',
     }
 }

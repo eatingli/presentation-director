@@ -17,12 +17,13 @@ export default class App extends React.Component {
             selectedMedia: -1,
             contextMenuTargetMedia: -1,
 
-            director: 'SingleSong',
+            // director: 'SingleSong',
+            director: 'MultiSong',
         }
 
         this.selectTemplate = this.selectTemplate.bind(this);
         this.updateContent = this.updateContent.bind(this);
-        this.onLoadMeaia = this.onLoadMeaia.bind(this);
+        this.onLoadMedia = this.onLoadMedia.bind(this);
         this.saveMedia = this.saveMedia.bind(this);
         this.fileHelper = null;
         this.loadMedia = () => { };
@@ -127,7 +128,7 @@ export default class App extends React.Component {
         Ipc.updateContent(JSON.stringify(content));
     }
 
-    onLoadMeaia(callback) {
+    onLoadMedia(callback) {
         this.loadMedia = callback
     }
 
@@ -160,7 +161,12 @@ export default class App extends React.Component {
         let media = this.state.mediaList[index];
 
         this.setState({ selectedMedia: index, director: media.director });
-        this.loadMedia(filename, media);
+
+        // 重點: 確保loadMedia比較晚被呼叫，解決變換Director時遇到的問題。
+        setImmediate(() => {
+            this.loadMedia(filename, media);
+        })
+
     }
 
     render() {
@@ -235,7 +241,7 @@ export default class App extends React.Component {
                     <div style={GridStyle.centerR}>
                         <Director selectTemplate={this.selectTemplate}
                             updateContent={this.updateContent}
-                            onLoadMeaia={this.onLoadMeaia}
+                            onLoadMedia={this.onLoadMedia}
                             saveMedia={this.saveMedia} />
                         {/* 尚未選擇內容 */}
                     </div>

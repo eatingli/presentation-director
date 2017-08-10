@@ -47,6 +47,7 @@ const Styles = {
         background: '#000000',
         display: 'flex',
         flexDirection: 'column',
+        overflow: 'hidden',
 
         color: '#FFFFFF',
         textShadow: textShadow,
@@ -60,6 +61,7 @@ const Styles = {
         letterSpacing: '3px',
         lineHeight: '1.1em',
         fontSize: '4.0em',
+        whiteSpace: 'nowrap',
     },
     title2: {
         textAlign: 'right',
@@ -68,6 +70,7 @@ const Styles = {
         // textDecoration: 'underline',
         lineHeight: '1.1em',
         fontSize: '3.5em',
+        whiteSpace: 'nowrap',
     },
     description: {
         margin: 'auto 0px 40px 0px',
@@ -80,5 +83,6 @@ const Styles = {
         padding: '0',
         wordSpacing: '0.2em',
         fontSize: '3.0em',
+        whiteSpace: 'nowrap',
     }
 }
