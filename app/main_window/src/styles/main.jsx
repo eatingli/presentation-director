@@ -124,6 +124,15 @@ export const MainStyle = {
         fontSize: '15px',
         letterSpacing: '1px',
     },
+    launchedBtn: {
+        margin: '1px 2px 1px 1px',
+        border: 0,
+        backgroundColor: '#DC143C',
+        flex: 1,
+        color: '#ffffff',
+        fontSize: '15px',
+        letterSpacing: '1px',
+    },
     fnBtn: {
         margin: '1px 2px 1px 2px',
         // margin: '10px 20px 10px 20px',

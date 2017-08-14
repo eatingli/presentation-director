@@ -15,6 +15,13 @@ mediaListOptionMeun.append(new MenuItem({
 }))
 
 mediaListOptionMeun.append(new MenuItem({
+    label: 'Refresh Path',
+    click: function (item, focusedWindow) {
+        focusedWindow.webContents.send(Const.IPC.MENU_MEDIA_LIST, Const.IPC.MENU_MEDIA_LIST_.REFRESH_PATH);
+    }
+}))
+
+mediaListOptionMeun.append(new MenuItem({
     label: 'New Media',
     submenu: [{
         label: 'SingleSong',

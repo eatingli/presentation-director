@@ -16,9 +16,9 @@ export default class App extends React.Component {
             mediaList: [],
             selectedMedia: -1,
             contextMenuTargetMedia: -1,
+            launched: false,
 
-            // director: 'SingleSong',
-            director: 'MultiSong',
+            director: '',
         }
 
         this.newDirector = 'SingleSong'; // New Media 時的型別
@@ -45,16 +45,21 @@ export default class App extends React.Component {
          */
         Ipc.onPlayerOpen(() => {
             console.log('On PLAYER_OPEN');
+            this.setState({ launched: true })
         });
 
         Ipc.onPlayerClose(() => {
             console.log('On PLAYER_CLOSE');
+            this.setState({ launched: false })
         });
 
         Ipc.onMenuMediaList((flag) => {
             switch (flag) {
                 case Const.MENU_MEDIA_LIST_.SELECT_PATH:
                     Ipc.showPathDialog();
+                    break;
+                case Const.MENU_MEDIA_LIST_.REFRESH_PATH:
+                    this.updateFileList();
                     break;
                 case Const.MENU_MEDIA_LIST_.SINGLE_SONG:
                     this.newDirector = 'SingleSong';
@@ -108,7 +113,7 @@ export default class App extends React.Component {
         })
     }
 
-    updateFileList(callback) {
+    updateFileList() {
 
         let fileHelper = this.fileHelper;
 
@@ -120,7 +125,8 @@ export default class App extends React.Component {
                 let fileList = [];
                 let mediaList = [];
 
-                for (let file of files) {
+                let loopLoad = () => {
+                    let file = files[--counter]
                     fileHelper.loadFile(file)
                         .then((data) => {
 
@@ -130,14 +136,26 @@ export default class App extends React.Component {
                                 mediaList.push(media);
                             }
 
-                            if (--counter == 0) {
-                                this.setState({ fileList: fileList, mediaList: mediaList });
-                                callback && callback();
+                            // 終止條件檢查
+                            if (counter == 0) {
+                                this.setState({
+                                    fileList: fileList,
+                                    mediaList: mediaList,
+
+                                    // 重置選擇狀態
+                                    selectedMedia: -1,
+                                    director: '',
+                                });
+                            } else {
+                                loopLoad();
                             }
 
                         })
                         .catch((e) => console.error(e))
                 }
+                loopLoad = loopLoad.bind(this);
+
+                if (counter > 0) loopLoad();
             })
     }
 
@@ -198,8 +216,11 @@ export default class App extends React.Component {
     render() {
 
         // Hot require Director components
-        let Director = require('../directors/' + this.state.director + '/index.jsx').default
-        if (!Director) throw new Error('Director Load Error');
+        let Director = null;
+        if (this.state.director) {
+            Director = require('../directors/' + this.state.director + '/index.jsx').default
+            if (!Director) throw new Error('Director Load Error');
+        }
 
         // Media List
         let mediaList = this.state.mediaList.map((media, i) => {
@@ -268,11 +289,15 @@ export default class App extends React.Component {
 
                     {/* Director */}
                     <div style={GridStyle.centerR}>
-                        <Director selectTemplate={this.selectTemplate}
-                            updateContent={this.updateContent}
-                            onLoadMedia={this.onLoadMedia}
-                            saveMedia={this.saveMedia} />
-                        {/* 尚未選擇內容 */}
+                        {
+                            this.state.director ?
+                                <Director selectTemplate={this.selectTemplate}
+                                    updateContent={this.updateContent}
+                                    onLoadMedia={this.onLoadMedia}
+                                    saveMedia={this.saveMedia} />
+                                :
+                                null
+                        }
                     </div>
                 </div>
 
@@ -281,7 +306,8 @@ export default class App extends React.Component {
 
                     {/* Launch Button */}
                     <div style={GridStyle.bottomL}>
-                        <button style={MainStyle.launchBtn} onClick={this.handleLaunchClick}>Launch</button>
+                        <button style={this.state.launched ? MainStyle.launchedBtn : MainStyle.launchBtn}
+                            onClick={this.handleLaunchClick}>Launch</button>
                     </div>
 
                     {/* Bottom Row */}

@@ -3,11 +3,11 @@ export class IPC {
     /**
      * 基本控制
      */
-    static SELECT_TEMPLATE = 'SELECT_TEMPLATE'; // Send / Receive
-    static UPDATE_CONTENT = 'UPDATE_CONTENT'; // Send / Receive
-    static TOGGLE_PLAYER = 'TOGGLE_PLAYER'; // Send
-    static PLAYER_OPEN = 'PLAYER_OPEN'; // Receive    
-    static PLAYER_CLOSE = 'PLAYER_CLOSE'; // Receive
+    static SELECT_TEMPLATE = 'SELECT_TEMPLATE';
+    static UPDATE_CONTENT = 'UPDATE_CONTENT';
+    static TOGGLE_PLAYER = 'TOGGLE_PLAYER';
+    static PLAYER_OPEN = 'PLAYER_OPEN';
+    static PLAYER_CLOSE = 'PLAYER_CLOSE';
 
     /**
      * 路徑選擇
@@ -21,15 +21,16 @@ export class IPC {
     static MENU_MEDIA_LIST = 'MENU_MEDIA_LIST';
     static MENU_MEDIA_LIST_ = {
         SELECT_PATH: 'A0',
-        NEW_MEDIA: 'B0',
-        SINGLE_SONG: 'B1',
-        MULTI_SONG: 'B2',
+        REFRESH_PATH: 'B0',
+        NEW_MEDIA: 'D0',
+        SINGLE_SONG: 'D1',
+        MULTI_SONG: 'D2',
     }
 
     static MENU_MEDIA_ITEM = 'MENU_MEDIA_ITEM';
     static MENU_MEDIA_ITEM_ = {
-        RENAME: 'A',
-        DELETE: 'B',
+        RENAME: 'A0',
+        DELETE: 'B0',
     }
 
     /**

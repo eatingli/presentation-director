@@ -148,8 +148,8 @@ function creatPlayerWindow(bounds) {
     }));
 
     // Open the DevTools.
-    if (DEV_MODE)
-        playerWindow.webContents.openDevTools()
+    // if (DEV_MODE)
+    // playerWindow.webContents.openDevTools()
 
     return playerWindow;
 }
