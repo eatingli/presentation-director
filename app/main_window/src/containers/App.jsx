@@ -62,19 +62,19 @@ export default class App extends React.Component {
             let fileHelper = this.fileHelper;
 
             this.fileHelper.updateFileList()
+                .then((files) => FileHelper.extnameFilter(files, '.json'))
                 .then((files) => {
 
                     let counter = files.length;
                     let fileList = [];
                     let mediaList = [];
 
-
                     for (let file of files) {
                         fileHelper.loadFile(file)
                             .then((data) => {
                                 try {
                                     let media = JSON.parse(data);
-                                    if (media && media.name && media.director) {
+                                    if (media && media.director) {
                                         fileList.push(file);
                                         mediaList.push(media);
                                     }
@@ -105,14 +105,6 @@ export default class App extends React.Component {
         Ipc.onMenuMediaItemDelete(() => {
             console.log('onMenuMediaItemDelete');
         });
-
-        // test
-        // let mediaList = [];
-        // for (let i = 0; i < 40; i++) {
-        //     mediaList.push("歌名歌名" + i + " (主畫面)");
-        //     mediaList.push("歌名歌名" + i + " (提示幕)");
-        // }
-        // this.setState({ mediaList: mediaList });
     }
 
     /**
@@ -175,9 +167,10 @@ export default class App extends React.Component {
         let Director = require('../directors/' + this.state.director + '/index.jsx').default
         if (!Director) throw new Error('Director Load Error');
 
-        // 
+        // Media List
         let mediaList = this.state.mediaList.map((media, i) => {
-            let title = media.name + ` (${media.director})`;
+            let mediaName = FileHelper.getFilename(this.state.fileList[i]);
+            let title = mediaName + ` (${media.director})`;
             return (
                 <MediaItem key={i} title={title}
                     selected={i == this.state.selectedMedia}
@@ -195,8 +188,8 @@ export default class App extends React.Component {
             pathStr = pathStr.substring(0, 20) + '...';
 
         // mediaName
-        let selectedMedia = this.state.mediaList[this.state.selectedMedia];
-        let mediaName = selectedMedia ? selectedMedia.name : 'Media Name';
+        let selectedFile = this.state.fileList[this.state.selectedMedia];
+        let mediaName = selectedFile ? FileHelper.getFilename(selectedFile) : 'Media Name';
 
         return (
             <div style={GridStyle.container}>

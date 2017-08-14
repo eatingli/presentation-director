@@ -67,6 +67,22 @@ export default class FileHelper {
         });
     }
 
+    static extnameFilter(fileNames, extname) {
+        return new Promise((resolve, reject) => {
+
+            if (extname && extname.length > 0 && extname[0] !== '.') extname = '.' + extname;
+
+            let result = fileNames.filter((fileName) =>
+                path.extname(fileName) === extname
+            )
+            resolve(result);
+        })
+    }
+
+    static getFilename(file) {
+        return path.basename(file).replace(path.extname(file), '');
+    }
+
     watch(callback) {
         this.onChange = callback;
     }
