@@ -5,12 +5,16 @@
   "author": "Eating Li <suwako.www@gmail.com>",
   "main": "./app/electron/build/bundle.js",
   "scripts": {
-    "build": "electron-packager . --asar=true --ignore=node_modules/electron-* --overwrite --version=1.6.11",
-    "build-win": "npm run build --  --platform=win32 --arch=x64 ",
-    "dev-server": "set NODE_ENV=development && webpack --config webpack.config.server.js --watch --progress --colors",
-    "dev-client": "set NODE_ENV=development && webpack --config webpack.config.client.js --watch --progress --colors",
-    "prod-server": "set NODE_ENV=production && webpack --config webpack.config.server.js --progress --colors",
-    "prod-client": "set NODE_ENV=production && webpack --config webpack.config.client.js --progress --colors",
+    "build": "electron-packager . --asar=true --ignore=node_modules/electron-* --ignore= --overwrite --version=1.6.11",
+    "build-win": "npm run build -- --platform=win32 --arch=x64 ",
+
+    "wp-dev-server": "set NODE_ENV=development && webpack --config webpack.config.server.js --watch --progress --colors",
+    "wp-dev-client": "set NODE_ENV=development && webpack --config webpack.config.client.js --watch --progress --colors",
+
+    "wp-server": "set NODE_ENV=production && webpack --config webpack.config.server.js --progress --colors",
+    "wp-client": "set NODE_ENV=production && webpack --config webpack.config.client.js --progress --colors",
+    "wp-prod": "npm run wp-server && npm run wp-client",
+
     "start-dev": "set NODE_ENV=development && electron .",
     "start": "set NODE_ENV=production && electron ."
   },
