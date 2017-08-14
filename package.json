@@ -5,7 +5,7 @@
   "author": "Eating Li <suwako.www@gmail.com>",
   "main": "./app/electron/build/bundle.js",
   "scripts": {
-    "build": "electron-packager . --asar=true --ignore=node_modules/electron-* --ignore= --overwrite --version=1.6.11",
+    "build": "electron-packager . --asar=true --ignore=node_modules/electron-* --ignore=src --overwrite --version=1.6.11",
     "build-win": "npm run build -- --platform=win32 --arch=x64 ",
 
     "wp-dev-server": "set NODE_ENV=development && webpack --config webpack.config.server.js --watch --progress --colors",

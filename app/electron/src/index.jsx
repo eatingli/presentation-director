@@ -191,15 +191,6 @@ app.on('ready', () => {
      */
     createMainWindow();
 
-    /**
-     * 
-     */
-    ipcMain.on(Const.IPC.SHOW_PATH_DIALOG, (event, arg) => {
-        showPathDialog((filePaths) => {
-            if (filePaths)
-                mainWindow.webContents.send(Const.IPC.SELECT_PATH, filePaths[0]);
-        });
-    });
 
     /**
      * 
@@ -255,6 +246,9 @@ app.on('ready', () => {
         }
     })
 
+    /**
+     * Path
+     */
     ipcMain.on(Const.IPC.MENU_MEDIA_ITEM, function (event) {
         const win = BrowserWindow.fromWebContents(event.sender);
         mediaItemMeun.popup(win);
@@ -265,17 +259,35 @@ app.on('ready', () => {
         mediaListOptionMeun.popup(win);
     })
 
+    /**
+     * Dialog
+     */
     ipcMain.on(Const.IPC.NEW_MEDIA_DIALOG, function (event, arg) {
         const options = {
             title: 'New Media',
-            filters: [
-                { name: 'Media', extensions: ['json'] }
-            ]
+            filters: [{ name: 'Media', extensions: ['json'] }]
         }
         dialog.showSaveDialog(options, function (filename) {
             if (filename) event.sender.send('NEW_MEDIA_DIALOG', filename)
         })
     })
+
+    ipcMain.on(Const.IPC.MEDIA_RENAME_DIALOG, function (event, arg) {
+        const options = {
+            title: 'Media Rename',
+            filters: [{ name: 'Media', extensions: ['json'] }]
+        }
+        dialog.showSaveDialog(options, function (filename) {
+            if (filename) event.sender.send('MEDIA_RENAME_DIALOG', filename)
+        })
+    })
+
+    ipcMain.on(Const.IPC.SHOW_PATH_DIALOG, (event, arg) => {
+        showPathDialog((filePaths) => {
+            if (filePaths)
+                mainWindow.webContents.send(Const.IPC.SELECT_PATH, filePaths[0]);
+        });
+    });
 
 
 })

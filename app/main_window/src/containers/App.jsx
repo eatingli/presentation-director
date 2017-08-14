@@ -21,7 +21,7 @@ export default class App extends React.Component {
             director: '',
         }
 
-        this.newDirector = 'SingleSong'; // New Media 時的型別
+        this.newDirector = ''; // New Media 時的型別
 
         this.selectTemplate = this.selectTemplate.bind(this);
         this.updateContent = this.updateContent.bind(this);
@@ -75,10 +75,14 @@ export default class App extends React.Component {
         Ipc.onMenuMediaItem((flag) => {
             switch (flag) {
                 case Const.MENU_MEDIA_ITEM_.RENAME:
-                    console.log('onMenuMediaItemRename');
+                    Ipc.showMediaRenameDialog();
                     break;
                 case Const.MENU_MEDIA_ITEM_.DELETE:
-                    console.log('onMenuMediaItemDelete');
+                    let filename = this.state.fileList[this.state.contextMenuTargetMedia];
+                    this.fileHelper.deleteFile(filename)
+                        .then(() => {
+                            this.updateFileList();
+                        })
                     break;
             }
         })
@@ -106,9 +110,19 @@ export default class App extends React.Component {
             media.data = {};
 
             this.fileHelper.saveFile(Path.basename(file), JSON.stringify(media))
-                .then(() => {
-                    this.updateFileList();
-                })
+                .then(() => this.updateFileList())
+                .catch((e) => { console.error(e); })
+        })
+
+        Ipc.onMediaRename((file) => {
+            let media = this.state.mediaList[this.state.contextMenuTargetMedia];
+            let oldFile = this.state.fileList[this.state.contextMenuTargetMedia];
+            let newFile = Path.basename(file);
+            if (!oldFile || !newFile || oldFile === newFile) return;
+
+            this.fileHelper.saveFile(newFile, JSON.stringify(media))
+                .then(() => this.fileHelper.deleteFile(oldFile))
+                .then(() => this.updateFileList())
                 .catch((e) => { console.error(e); })
         })
     }

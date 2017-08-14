@@ -16,7 +16,7 @@ export class IPC {
     static SELECT_PATH = 'SELECT_PATH';
 
     /**
-     * 選單
+     * Menu
      */
     static MENU_MEDIA_LIST = 'MENU_MEDIA_LIST';
     static MENU_MEDIA_LIST_ = {
@@ -34,7 +34,9 @@ export class IPC {
     }
 
     /**
-     * New Media
+     * Dialog
      */
     static NEW_MEDIA_DIALOG = 'NEW_MEDIA_DIALOG';
+    static MEDIA_RENAME_DIALOG = 'MEDIA_RENAME_DIALOG';
+
 }

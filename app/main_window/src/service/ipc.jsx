@@ -4,7 +4,7 @@ import { IPC as Const } from '../../../common/const.js';
 export default class Ipc {
 
     /**
-     * 
+     * Basic
      */
     static selectTemplate(template) {
         ipcRenderer.send(Const.SELECT_TEMPLATE, template);
@@ -30,35 +30,9 @@ export default class Ipc {
         });
     }
 
-    /**
-     * 
-     */
-    static showPathDialog() {
-        ipcRenderer.send(Const.SHOW_PATH_DIALOG, '');
-    }
-
-    static onSelectPath(callback) {
-        ipcRenderer.on(Const.SELECT_PATH, (event, path) => {
-            callback(path);
-        });
-    }
 
     /**
-     * New Media
-     */
-
-    static showNewMediaDialog() {
-        ipcRenderer.send(Const.NEW_MEDIA_DIALOG, '');
-    }
-
-    static onNewMedia(callback) {
-        ipcRenderer.on(Const.NEW_MEDIA_DIALOG, (event, filename) => {
-            callback(filename);
-        });
-    }
-
-    /**
-     * 選單
+     * Menu
      */
     static showMenuMediaListOption() {
         ipcRenderer.send(Const.MENU_MEDIA_LIST, '');
@@ -78,6 +52,39 @@ export default class Ipc {
         ipcRenderer.addListener(Const.MENU_MEDIA_ITEM, (event, flag) => {
             callback(flag);
         })
+    }
+
+    /**
+     * Dialog
+     */
+    static showPathDialog() {
+        ipcRenderer.send(Const.SHOW_PATH_DIALOG, '');
+    }
+
+    static onSelectPath(callback) {
+        ipcRenderer.on(Const.SELECT_PATH, (event, path) => {
+            callback(path);
+        });
+    }
+
+    static showNewMediaDialog() {
+        ipcRenderer.send(Const.NEW_MEDIA_DIALOG, '');
+    }
+
+    static onNewMedia(callback) {
+        ipcRenderer.on(Const.NEW_MEDIA_DIALOG, (event, filename) => {
+            callback(filename);
+        });
+    }
+
+    static showMediaRenameDialog() {
+        ipcRenderer.send(Const.MEDIA_RENAME_DIALOG, '');
+    }
+
+    static onMediaRename(callback) {
+        ipcRenderer.on(Const.MEDIA_RENAME_DIALOG, (event, filename) => {
+            callback(filename);
+        });
     }
 }
 
