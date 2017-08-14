@@ -63,7 +63,7 @@ const Styles = {
         flexDirection: 'column',
     },
     row: {
-        fontSize: '5.5em',
+        fontSize: '8em',
         textAlign: 'center',
         lineHeight: '1.5em',
         wordSpacing: '0.2em',

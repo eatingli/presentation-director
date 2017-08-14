@@ -1,11 +1,10 @@
-const Electron = require('electron');
-const { app, globalShortcut, BrowserWindow, ipcMain, dialog } = Electron;
-const DEV_MODE = process.env.NODE_ENV && process.env.NODE_ENV.trim() === 'development';
-const path = require('path');
-const url = require('url');
-
-const Const = require('../../common/const.js');
+import path from 'path'
+import url from 'url'
+import Electron, { app, globalShortcut, BrowserWindow, ipcMain, dialog } from 'electron'
+import * as Const from '../../common/const.js'
 import { mediaListOptionMeun, mediaItemMeun } from './menu.jsx'
+
+const DEV_MODE = process.env.NODE_ENV && process.env.NODE_ENV.trim() === 'development';
 
 let mainWindow = null
 let playerWindow = null
@@ -73,8 +72,8 @@ function prodShortcut() {
 function createMainWindow() {
     // Create the browser window.
     mainWindow = new BrowserWindow({
-        width: 1000,
-        height: 700
+        width: 1100,
+        height: 800
     })
 
     // Load app index page.
@@ -118,7 +117,7 @@ function creatPlayerWindow(bounds) {
 
 
     let config = {
-        title: 'Player Window',
+        title: 'Player',
         x: bounds.x,
         y: bounds.y,
         width: bounds.width,
@@ -238,8 +237,8 @@ app.on('ready', () => {
                 playerWindow = creatPlayerWindow({
                     x: 0,
                     y: 0,
-                    width: 500,
-                    height: 500
+                    width: 800,
+                    height: 700
                 });
 
             mainWindow.webContents.send(Const.IPC.PLAYER_OPEN, '');

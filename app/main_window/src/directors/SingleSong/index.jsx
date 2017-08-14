@@ -147,12 +147,12 @@ export default class SingleSong extends React.Component {
                 <br />
 
                 {/* 描述 */}
-                <textarea rows="2" cols="70" value={this.state.editDescription} placeholder="描述"
+                <textarea rows="2" cols="90" value={this.state.editDescription} placeholder="描述"
                     onChange={(e) => this.setState({ editDescription: e.target.value })}></textarea>
                 <br />
 
                 {/* 歌詞 */}
-                <textarea rows="32" cols="70" value={this.state.editLyrics} placeholder="歌詞"
+                <textarea rows="32" cols="90" value={this.state.editLyrics} placeholder="歌詞"
                     onChange={(e) => this.setState({ editLyrics: e.target.value })}></textarea>
                 <br />
 

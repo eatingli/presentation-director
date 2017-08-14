@@ -179,7 +179,9 @@ export default class App extends React.Component {
         let mediaList = this.state.mediaList.map((media, i) => {
             let title = media.name + ` (${media.director})`;
             return (
-                <MediaItem key={i} title={title} selected={i == this.state.selectedMedia}
+                <MediaItem key={i} title={title}
+                    selected={i == this.state.selectedMedia}
+                    editing={false}
                     onClick={(e) => this.handleMediaItemClick(i)}
                     onContextMenu={(e) => this.handleMediaItemContextMenu(i)}
                 />

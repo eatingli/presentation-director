@@ -1,12 +1,25 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 
 export default class MediaItem extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = {
-            focus: false,
-        }
+    }
+
+    state = {
+        focus: false,
+    }
+
+    static defaultProps = {
+        selected: false,
+        editing: false,
+    }
+    static propTypes = {
+        selected: PropTypes.bool.isRequired,
+        editing: PropTypes.bool.isRequired,
+        title: PropTypes.string.isRequired,
+        onClick: PropTypes.func.isRequired,
+        onContextMenu: PropTypes.func.isRequired,
     }
 
     handleMouseEnter() {
@@ -18,15 +31,10 @@ export default class MediaItem extends React.Component {
     }
 
     render() {
-        // let btn = this.state.focus ? (
-        //     <div style={Style.btnRow}>
-        //         <button style={Style.btnEdit} onClick={this.props.handleEdit}>R</button>
-        //         <button style={Style.btnDelete} onClick={this.props.handleDelete}>X</button>
-        //     </div>
-        // ) : (null);
 
+        // Background Style
         let bgStyle = this.state.focus ? Style.focus : {};
-        if (this.props.selected) bgStyle = Style.selected;
+        if (this.props.selected && !this.props.editing) bgStyle = Style.selected;
 
         return (
             <li style={{ ...Style.item, ...bgStyle }}
@@ -34,8 +42,11 @@ export default class MediaItem extends React.Component {
                 onContextMenu={this.props.onContextMenu}
                 onMouseEnter={this.handleMouseEnter.bind(this)}
                 onMouseLeave={this.handleMouseLeave.bind(this)}>
-                {this.props.title}
-                {/* {btn} */}
+                {
+                    this.props.editing ?
+                        (<input type="text" style={Style.editing} value={this.props.title} onChange={() => { }} />) :
+                        (<div style={Style.showing}>{this.props.title}</div>)
+                }
             </li>
         );
     }
@@ -48,7 +59,7 @@ const Style = {
         display: 'flex',
         flexDirection: 'row',
         flex: 1,
-        padding: '0px 0px 0px 18px',
+        padding: '0',
         lineHeight: '33px',
         fontSize: '17px',
         cursor: 'pointer',
@@ -59,6 +70,21 @@ const Style = {
     selected: {
         backgroundColor: 'rgba(255, 255, 255, 0.11)',
         boxShadow: '0 0 1px rgba(0, 0, 0, 0.1)',
+    },
+    showing: {
+        margin: '0px 0px 0px 18px',
+    },
+    editing: {
+        width: '100%',
+        padding: '0 0 0 9px',
+        margin: '0 8px 0 8px',
+        border: '1px solid #1565C0',
+        color: '#ffffff',
+        fontFamily: 'Roboto, NotoSansTC, sans-serif',
+        fontSize: '17px',
+        lineHeight: '33px',
+        backgroundColor: 'rgba(255, 255, 255, 0.1)',
+
     },
     btnRow: {
         margin: "0px 0px 0px auto",
