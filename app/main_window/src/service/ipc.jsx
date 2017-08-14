@@ -44,37 +44,39 @@ export default class Ipc {
     }
 
     /**
+     * New Media
+     */
+
+    static showNewMediaDialog() {
+        ipcRenderer.send(Const.NEW_MEDIA_DIALOG, '');
+    }
+
+    static onNewMedia(callback) {
+        ipcRenderer.on(Const.NEW_MEDIA_DIALOG, (event, filename) => {
+            callback(filename);
+        });
+    }
+
+    /**
      * 選單
      */
     static showMenuMediaListOption() {
-        ipcRenderer.send(Const.SHOW_MENU_MEDIA_LIST_OPTION, '');
+        ipcRenderer.send(Const.MENU_MEDIA_LIST, '');
     }
 
     static showMenuMediaItem() {
-        ipcRenderer.send(Const.SHOW_MENU_MEDIA_ITEM, '');
+        ipcRenderer.send(Const.MENU_MEDIA_ITEM, '');
     }
 
-    static onMeunMediaListSelectPath(callback) {
-        ipcRenderer.addListener(Const.MENU_MEDIA_LIST_OPTION.SELECT_PATH, (event, arg) => {
-            callback();
+    static onMenuMediaList(callback) {
+        ipcRenderer.addListener(Const.MENU_MEDIA_LIST, (event, flag) => {
+            callback(flag);
         })
     }
 
-    static onMenuMediaListNewMedia(callback) {
-        ipcRenderer.addListener(Const.MENU_MEDIA_LIST_OPTION.NEW_MEDIA, (event, arg) => {
-            callback();
-        })
-    }
-
-    static onMenuMediaItemRename(callback) {
-        ipcRenderer.addListener(Const.MENU_MEDIA_ITEM.RENAME, (event, arg) => {
-            callback();
-        })
-    }
-
-    static onMenuMediaItemDelete(callback) {
-        ipcRenderer.addListener(Const.MENU_MEDIA_ITEM.DELETE, (event, arg) => {
-            callback();
+    static onMenuMediaItem(callback) {
+        ipcRenderer.addListener(Const.MENU_MEDIA_ITEM, (event, flag) => {
+            callback(flag);
         })
     }
 }

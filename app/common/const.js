@@ -18,15 +18,22 @@ export class IPC {
     /**
      * 選單
      */
-    static SHOW_MENU_MEDIA_LIST_OPTION = 'SHOW_MENU_MEDIA_LIST_OPTION';
-    static MENU_MEDIA_LIST_OPTION = {
-        SELECT_PATH: 'MENU_MEDIA_LIST_OPTION_1',
-        NEW_MEDIA: 'MENU_MEDIA_LIST_OPTION_2'
+    static MENU_MEDIA_LIST = 'MENU_MEDIA_LIST';
+    static MENU_MEDIA_LIST_ = {
+        SELECT_PATH: 'A0',
+        NEW_MEDIA: 'B0',
+        SINGLE_SONG: 'B1',
+        MULTI_SONG: 'B2',
     }
-    
-    static SHOW_MENU_MEDIA_ITEM = 'SHOW_MENU_MEDIA_ITEM';
-    static MENU_MEDIA_ITEM = {
-        RENAME: 'MENU_MEDIA_ITEM_1',
-        DELETE: 'MENU_MEDIA_ITEM_2',
+
+    static MENU_MEDIA_ITEM = 'MENU_MEDIA_ITEM';
+    static MENU_MEDIA_ITEM_ = {
+        RENAME: 'A',
+        DELETE: 'B',
     }
+
+    /**
+     * New Media
+     */
+    static NEW_MEDIA_DIALOG = 'NEW_MEDIA_DIALOG';
 }

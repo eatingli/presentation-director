@@ -21,6 +21,8 @@ export default class App extends React.Component {
             director: 'MultiSong',
         }
 
+        this.newDirector = 'SingleSong'; // New Media 時的型別
+
         this.selectTemplate = this.selectTemplate.bind(this);
         this.updateContent = this.updateContent.bind(this);
         this.onLoadMedia = this.onLoadMedia.bind(this);
@@ -31,6 +33,8 @@ export default class App extends React.Component {
         this.handleMediaListOptionClick = this.handleMediaListOptionClick.bind(this);
         this.handleMediaItemContextMenu = this.handleMediaItemContextMenu.bind(this);
         this.handleMediaItemClick = this.handleMediaItemClick.bind(this);
+
+        this.updateFileList = this.updateFileList.bind(this);
 
     }
 
@@ -47,6 +51,33 @@ export default class App extends React.Component {
             console.log('On PLAYER_CLOSE');
         });
 
+        Ipc.onMenuMediaList((flag) => {
+            switch (flag) {
+                case Const.MENU_MEDIA_LIST_.SELECT_PATH:
+                    Ipc.showPathDialog();
+                    break;
+                case Const.MENU_MEDIA_LIST_.SINGLE_SONG:
+                    this.newDirector = 'SingleSong';
+                    Ipc.showNewMediaDialog();
+                    break;
+                case Const.MENU_MEDIA_LIST_.MULTI_SONG:
+                    this.newDirector = 'MultiSong';
+                    Ipc.showNewMediaDialog();
+                    break;
+            }
+        })
+
+        Ipc.onMenuMediaItem((flag) => {
+            switch (flag) {
+                case Const.MENU_MEDIA_ITEM_.RENAME:
+                    console.log('onMenuMediaItemRename');
+                    break;
+                case Const.MENU_MEDIA_ITEM_.DELETE:
+                    console.log('onMenuMediaItemDelete');
+                    break;
+            }
+        })
+
         Ipc.onSelectPath((path) => {
             path = Path.normalize(path);
             console.log('On SELECT PATH', path);
@@ -59,52 +90,55 @@ export default class App extends React.Component {
                 this.fileHelper = new FileHelper(path);
             }
 
-            let fileHelper = this.fileHelper;
+            this.updateFileList();
 
-            this.fileHelper.updateFileList()
-                .then((files) => FileHelper.extnameFilter(files, '.json'))
-                .then((files) => {
+        });
 
-                    let counter = files.length;
-                    let fileList = [];
-                    let mediaList = [];
+        Ipc.onNewMedia((file) => {
 
-                    for (let file of files) {
-                        fileHelper.loadFile(file)
-                            .then((data) => {
-                                try {
-                                    let media = JSON.parse(data);
-                                    if (media && media.director) {
-                                        fileList.push(file);
-                                        mediaList.push(media);
-                                    }
-                                } catch (e) {
-                                    console.error(e);
-                                }
+            let media = {};
+            media.director = this.newDirector;
+            media.data = {};
 
-                                if (--counter == 0)
-                                    this.setState({ fileList: fileList, mediaList: mediaList });
-                            })
-                    }
+            this.fileHelper.saveFile(Path.basename(file), JSON.stringify(media))
+                .then(() => {
+                    this.updateFileList();
                 })
+                .catch((e) => { console.error(e); })
+        })
+    }
 
-        });
+    updateFileList(callback) {
 
-        Ipc.onMeunMediaListSelectPath(() => {
-            Ipc.showPathDialog();
-        });
+        let fileHelper = this.fileHelper;
 
-        Ipc.onMenuMediaListNewMedia(() => {
-            console.log('onMenuMediaListNewMedia');
-        });
+        fileHelper.updateFileList()
+            .then((files) => FileHelper.extnameFilter(files, '.json'))
+            .then((files) => {
 
-        Ipc.onMenuMediaItemRename(() => {
-            console.log('onMenuMediaItemRename');
-        });
+                let counter = files.length;
+                let fileList = [];
+                let mediaList = [];
 
-        Ipc.onMenuMediaItemDelete(() => {
-            console.log('onMenuMediaItemDelete');
-        });
+                for (let file of files) {
+                    fileHelper.loadFile(file)
+                        .then((data) => {
+
+                            let media = JSON.parse(data);
+                            if (media && media.director) {
+                                fileList.push(file);
+                                mediaList.push(media);
+                            }
+
+                            if (--counter == 0) {
+                                this.setState({ fileList: fileList, mediaList: mediaList });
+                                callback && callback();
+                            }
+
+                        })
+                        .catch((e) => console.error(e))
+                }
+            })
     }
 
     /**

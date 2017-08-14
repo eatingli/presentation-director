@@ -255,14 +255,26 @@ app.on('ready', () => {
         }
     })
 
-    ipcMain.on(Const.IPC.SHOW_MENU_MEDIA_ITEM, function (event) {
+    ipcMain.on(Const.IPC.MENU_MEDIA_ITEM, function (event) {
         const win = BrowserWindow.fromWebContents(event.sender);
         mediaItemMeun.popup(win);
     })
 
-    ipcMain.on(Const.IPC.SHOW_MENU_MEDIA_LIST_OPTION, function (event) {
+    ipcMain.on(Const.IPC.MENU_MEDIA_LIST, function (event) {
         const win = BrowserWindow.fromWebContents(event.sender);
         mediaListOptionMeun.popup(win);
+    })
+
+    ipcMain.on(Const.IPC.NEW_MEDIA_DIALOG, function (event, arg) {
+        const options = {
+            title: 'New Media',
+            filters: [
+                { name: 'Media', extensions: ['json'] }
+            ]
+        }
+        dialog.showSaveDialog(options, function (filename) {
+            if (filename) event.sender.send('NEW_MEDIA_DIALOG', filename)
+        })
     })
 
 
