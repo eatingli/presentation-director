@@ -1,50 +1,45 @@
 
 # Presentation Director
 
-目前首要功能為歌詞投影，在雙螢幕(電腦+投影機)的環境下，選擇要撥放的段落到投影幕上。
+目前主要使用情境為歌詞投影，在雙螢幕(電腦+投影機)的環境下，選擇要撥放的段落到投影幕上。
 
 - 提供歌曲清單和歌曲編輯功能，可儲存和匯出入歌詞檔案。
-- 歌詞格式分為單行多行。
-- 用滑鼠直接點擊歌詞即可撥放。
+- 歌詞格式分為單行多行，或者未來更多的格式。
+- 單向控制，從控制端更新撥放端狀態，但程式本身不監控撥放端狀態。
 
-# IPC
+## 系統架構
 
-因為 Webpack 路徑的關係，沒有讓 Main-Window 直接管理 Player-Window，而是透過 main.js 中介來操作，這也能將Electron視窗管理邏輯從React中分離。
+### Media 系統
 
-# Directing Console
+- 媒體系統為基於檔案系統的，資料存取、管理單位。
+- 包含媒體檔案的新增/刪除/更名，並對其他系統提供載入/儲存的接口。
+- 每個媒體檔案內紀錄其所屬的 Director 型別，和媒體資料。
 
-配置與當前選擇媒體(Media)對應的 Director
+### Director 系統
 
-## Director
-獨立處理**編輯**和**指揮**，用React的元件來鑲嵌，透過檔名來動態載入對應實例。
+- 使用者操作核心，實作媒體資料的編輯，對畫面的控制。
+- 提供媒體編輯介面：載入媒體檔案 -> 編輯 -> 儲存媒體檔案。
+- 提供畫面控制：選擇 Template -> 將媒體作為 Content -> 填充為完整畫面
+- Director 為獨立組件，如何調用由所選媒體的型別決定。
 
-    // Props
-    selectTemplate(template)
-    updateContent(content)
-    save(newDate)
+### Template 系統
 
-## 預計的 Director
-- 歌詞主畫面
-- 歌詞提示幕
-- 新家人名單(小組)
-- 新家人名單(集中)
+- 顯示畫面的範本，所有畫面都來自 Template。
+- 可以填入 Content、設定 Config(暫定)，來展示不同的畫面。
+- Template 為獨立組件，被 Director 調用和控制。
 
-# Template
-所有畫面都是Template填入Content來產生.
+## 使用技術
 
-# 待確認
+### Electron
 
-## 可否動態載入組件？
-是，在function中必須用require而不能用import，且必須是 export default
+- 用 Web 技術來實作桌面 App。
+- 透過 IPC 來調用 nodejs 軟體。
+- 跨平台，可打包成各平台執行檔。
 
-## 可否動態更換組件？ 
-是，只要prop一樣，熱切換是沒問題的
+### ReactJS
 
-## 剛選完Template後，Content還是舊的，會出現錯誤？
-收到Template Update後，判定實際上是否有變化，沒變化則視為無效，有變化則把Content也清空
+- 負責 Web 前端畫面
 
-## 上述如何實作？ 如果控制端同時發送selectTemplate和updateContent，不能確定哪個先觸發，這樣有可能收到新Content後馬上被清除
-...
+### Webpack + Babel
 
-## 初始狀態所套用的Template？
-...
+- 負責轉譯並打包程式

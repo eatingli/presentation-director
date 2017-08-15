@@ -144,18 +144,25 @@ export default class App extends React.Component {
                 let counter = files.length;
                 let fileList = [];
                 let mediaList = [];
+                let err = [];
 
                 let loopLoad = () => {
                     let file = files[--counter]
                     fileHelper.loadFile(file)
                         .then((data) => {
 
+                            // 解析檔案
                             let media = JSON.parse(data);
                             if (media && media.director) {
                                 fileList.push(file);
                                 mediaList.push(media);
                             }
-
+                        })
+                        .catch((e) => {
+                            console.error(e)
+                            err.push(file);
+                        })
+                        .then(() => {
                             // 終止條件檢查
                             if (counter == 0) {
                                 this.setState({
@@ -166,12 +173,12 @@ export default class App extends React.Component {
                                     selectedMedia: -1,
                                     director: '',
                                 });
+                                if (err.length > 0) alert('Media Loading Failed : \n ' + err.join('\n '))
                             } else {
+                                // 繼續遞迴
                                 loopLoad();
                             }
-
                         })
-                        .catch((e) => console.error(e))
                 }
                 loopLoad = loopLoad.bind(this);
 
