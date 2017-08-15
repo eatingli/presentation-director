@@ -45,7 +45,7 @@ export default class RowItem extends React.Component {
 const Styles = {
     row: {
         cursor: 'pointer',
-        // lineHeight: '24px',
+        lineHeight: '25px',
     },
     focus: {
         backgroundColor: 'rgba(255, 255, 255, 0.04)'

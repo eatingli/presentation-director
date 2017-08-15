@@ -79,11 +79,7 @@ export default class App extends React.Component {
                     Ipc.showMediaRenameDialog();
                     break;
                 case Const.MENU_MEDIA_ITEM_.DELETE:
-                    let filename = this.state.fileList[this.state.contextMenuTargetMedia];
-                    this.fileHelper.deleteFile(filename)
-                        .then(() => {
-                            this.updateFileList();
-                        })
+                    Ipc.showMediaDeleteDialog();
                     break;
             }
         })
@@ -126,6 +122,15 @@ export default class App extends React.Component {
                 .then(() => this.updateFileList())
                 .catch((e) => { console.error(e); })
         })
+
+        Ipc.onMediaDelete((isDelete) => {
+            if (!isDelete) return;
+            let filename = this.state.fileList[this.state.contextMenuTargetMedia];
+            this.fileHelper.deleteFile(filename)
+                .then(() => {
+                    this.updateFileList();
+                })
+        });
     }
 
     updateFileList() {

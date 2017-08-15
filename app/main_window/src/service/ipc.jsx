@@ -86,6 +86,16 @@ export default class Ipc {
             callback(filename);
         });
     }
+
+    static showMediaDeleteDialog() {
+        ipcRenderer.send(Const.MEDIA_DELETE_DIALOG, '');
+    }
+
+    static onMediaDelete(callback) {
+        ipcRenderer.on(Const.MEDIA_DELETE_DIALOG, (event, isDelete) => {
+            callback(isDelete);
+        });
+    }
 }
 
 

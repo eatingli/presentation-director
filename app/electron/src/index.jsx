@@ -264,16 +264,29 @@ app.on('ready', () => {
         })
     })
 
-    ipcMain.on(Const.IPC.SELECT_PATH_DIALOG, (event, arg) => {
+    ipcMain.on(Const.IPC.SELECT_PATH_DIALOG, function (event, arg) {
         const option = {
             title: 'Path',
             defaultPath: './',
             properties: ['openDirectory']
         };
-        dialog.showOpenDialog(mainWindow, option, (filePaths) => {
+        dialog.showOpenDialog(mainWindow, option, function (filePaths) {
             if (filePaths) mainWindow.webContents.send(Const.IPC.SELECT_PATH_DIALOG, filePaths[0]);
         });
     });
+
+    ipcMain.on(Const.IPC.MEDIA_DELETE_DIALOG, function (event) {
+        const options = {
+            type: 'info',
+            title: 'Warning',
+            message: 'Are you sure to delete this media?',
+            buttons: ['Yes', 'No']
+        }
+        dialog.showMessageBox(options, function (index) {
+            let isDelete = (index == 0);
+            event.sender.send(Const.IPC.MEDIA_DELETE_DIALOG, isDelete)
+        })
+    })
 
 
 })
