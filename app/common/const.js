@@ -10,12 +10,6 @@ export class IPC {
     static PLAYER_CLOSE = 'PLAYER_CLOSE';
 
     /**
-     * 路徑選擇
-     */
-    static SHOW_PATH_DIALOG = 'SHOW_PATH_DIALOG';
-    static SELECT_PATH = 'SELECT_PATH';
-
-    /**
      * Menu
      */
     static MENU_MEDIA_LIST = 'MENU_MEDIA_LIST';
@@ -36,6 +30,7 @@ export class IPC {
     /**
      * Dialog
      */
+    static SELECT_PATH_DIALOG = 'SELECT_PATH_DIALOG';
     static NEW_MEDIA_DIALOG = 'NEW_MEDIA_DIALOG';
     static MEDIA_RENAME_DIALOG = 'MEDIA_RENAME_DIALOG';
 

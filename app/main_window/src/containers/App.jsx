@@ -30,6 +30,7 @@ export default class App extends React.Component {
         this.fileHelper = null;
         this.loadMedia = () => { };
 
+        // UI 綁定
         this.handleMediaListOptionClick = this.handleMediaListOptionClick.bind(this);
         this.handleMediaItemContextMenu = this.handleMediaItemContextMenu.bind(this);
         this.handleMediaItemClick = this.handleMediaItemClick.bind(this);

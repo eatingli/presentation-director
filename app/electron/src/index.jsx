@@ -158,18 +158,6 @@ function isPlayerWindowShow() {
     return playerWindow != null && !playerWindow.isDestroyed();
 }
 
-function showPathDialog(callback) {
-    if (!mainWindow) return;
-
-    let option = {
-        title: 'Selete media folder path',
-        defaultPath: './',
-        properties: ['openDirectory']
-    };
-
-    dialog.showOpenDialog(mainWindow, option, callback); // callback(filePaths)
-}
-
 /**
  * Electron Ready
  */
@@ -193,7 +181,7 @@ app.on('ready', () => {
 
 
     /**
-     * 
+     * Basic
      */
     ipcMain.on(Const.IPC.SELECT_TEMPLATE, (event, arg) => {
         console.log('on SELECT_TEMPLATE');
@@ -202,9 +190,6 @@ app.on('ready', () => {
         }
     })
 
-    /**
-     * 
-     */
     ipcMain.on(Const.IPC.UPDATE_CONTENT, (event, arg) => {
         console.log('on UPDATE_CONTENT');
         if (isPlayerWindowShow()) {
@@ -212,9 +197,6 @@ app.on('ready', () => {
         }
     })
 
-    /**
-     * Toggle Player Show
-     */
     ipcMain.on(Const.IPC.TOGGLE_PLAYER, (event, arg) => {
         console.log('on TOGGLE_PLAYER');
 
@@ -247,7 +229,7 @@ app.on('ready', () => {
     })
 
     /**
-     * Path
+     * Menu
      */
     ipcMain.on(Const.IPC.MENU_MEDIA_ITEM, function (event) {
         const win = BrowserWindow.fromWebContents(event.sender);
@@ -264,7 +246,7 @@ app.on('ready', () => {
      */
     ipcMain.on(Const.IPC.NEW_MEDIA_DIALOG, function (event, arg) {
         const options = {
-            title: 'New Media',
+            title: 'New',
             filters: [{ name: 'Media', extensions: ['json'] }]
         }
         dialog.showSaveDialog(options, function (filename) {
@@ -274,7 +256,7 @@ app.on('ready', () => {
 
     ipcMain.on(Const.IPC.MEDIA_RENAME_DIALOG, function (event, arg) {
         const options = {
-            title: 'Media Rename',
+            title: 'Rename',
             filters: [{ name: 'Media', extensions: ['json'] }]
         }
         dialog.showSaveDialog(options, function (filename) {
@@ -282,10 +264,14 @@ app.on('ready', () => {
         })
     })
 
-    ipcMain.on(Const.IPC.SHOW_PATH_DIALOG, (event, arg) => {
-        showPathDialog((filePaths) => {
-            if (filePaths)
-                mainWindow.webContents.send(Const.IPC.SELECT_PATH, filePaths[0]);
+    ipcMain.on(Const.IPC.SELECT_PATH_DIALOG, (event, arg) => {
+        const option = {
+            title: 'Path',
+            defaultPath: './',
+            properties: ['openDirectory']
+        };
+        dialog.showOpenDialog(mainWindow, option, (filePaths) => {
+            if (filePaths) mainWindow.webContents.send(Const.IPC.SELECT_PATH_DIALOG, filePaths[0]);
         });
     });
 

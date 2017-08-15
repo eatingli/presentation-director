@@ -58,11 +58,11 @@ export default class Ipc {
      * Dialog
      */
     static showPathDialog() {
-        ipcRenderer.send(Const.SHOW_PATH_DIALOG, '');
+        ipcRenderer.send(Const.SELECT_PATH_DIALOG, '');
     }
 
     static onSelectPath(callback) {
-        ipcRenderer.on(Const.SELECT_PATH, (event, path) => {
+        ipcRenderer.on(Const.SELECT_PATH_DIALOG, (event, path) => {
             callback(path);
         });
     }
