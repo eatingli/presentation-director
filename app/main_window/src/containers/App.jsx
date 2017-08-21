@@ -35,6 +35,7 @@ export default class App extends React.Component {
         this.handleMediaItemContextMenu = this.handleMediaItemContextMenu.bind(this);
         this.handleMediaItemClick = this.handleMediaItemClick.bind(this);
 
+        this.checkPath = this.checkPath.bind(this);
         this.updateFileList = this.updateFileList.bind(this);
 
     }
@@ -60,15 +61,24 @@ export default class App extends React.Component {
                     Ipc.showPathDialog();
                     break;
                 case Const.MENU_MEDIA_LIST_.REFRESH_PATH:
-                    this.updateFileList();
+                    if (this.checkPath())
+                        this.updateFileList();
+                    else
+                        alert('Invalid Path')
                     break;
                 case Const.MENU_MEDIA_LIST_.SINGLE_SONG:
                     this.newDirector = 'SingleSong';
-                    Ipc.showNewMediaDialog();
+                    if (this.checkPath())
+                        Ipc.showNewMediaDialog();
+                    else
+                        alert('Invalid Path')
                     break;
                 case Const.MENU_MEDIA_LIST_.MULTI_SONG:
                     this.newDirector = 'MultiSong';
-                    Ipc.showNewMediaDialog();
+                    if (this.checkPath())
+                        Ipc.showNewMediaDialog();
+                    else
+                        alert('Invalid Path')
                     break;
             }
         })
@@ -133,6 +143,14 @@ export default class App extends React.Component {
         });
     }
 
+    /**
+     * 確認已選擇路徑，且路徑有效
+     * 未完成
+     */
+    checkPath() {
+        return this.state.path.length > 0;
+    }
+
     updateFileList() {
 
         let fileHelper = this.fileHelper;
@@ -168,8 +186,6 @@ export default class App extends React.Component {
                                 this.setState({
                                     fileList: fileList,
                                     mediaList: mediaList,
-
-                                    // 重置選擇狀態
                                     selectedMedia: -1,
                                     director: '',
                                 });
@@ -183,6 +199,14 @@ export default class App extends React.Component {
                 loopLoad = loopLoad.bind(this);
 
                 if (counter > 0) loopLoad();
+                else {
+                    this.setState({
+                        fileList: [],
+                        mediaList: [],
+                        selectedMedia: -1,
+                        director: '',
+                    });
+                }
             })
     }
 
@@ -310,6 +334,10 @@ export default class App extends React.Component {
                     {/* Media List */}
                     <div style={GridStyle.centerL}>
                         <ul className="scroller" style={MainStyle.mediaList}>
+                            {this.state.path ? null :
+                                (<li style={MainStyle.mediaListPrompt}>Click ... to Select Path</li>)}
+                            {this.state.path && this.state.mediaList.length == 0 ?
+                                (<li style={MainStyle.mediaListPrompt}>Click ... to Add Media</li>) : null}
                             {mediaList}
                         </ul>
                     </div>

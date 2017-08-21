@@ -115,6 +115,11 @@ export const MainStyle = {
         padding: '0',
         margin: '5px 0px 5px 0px',
     },
+    mediaListPrompt: {
+        color: '#707070',
+        textAlign: 'center',
+        margin: '45px 0 0 0'
+    },
     launchBtn: {
         margin: '1px 2px 1px 1px',
         border: 0,
