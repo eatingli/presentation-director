@@ -140,7 +140,7 @@ export default class SingleSong extends React.Component {
      */
     editUI() {
         return (
-            <div>
+            <div className="scroller" style={Styles.container}>
                 {/* 標題 */}
                 <input type="text" value={this.state.editTitle} placeholder="標題"
                     onChange={(e) => this.setState({ editTitle: e.target.value })} />
@@ -198,7 +198,7 @@ export default class SingleSong extends React.Component {
 
 
         return (
-            <div className="scroller">
+            <div className="scroller" style={Styles.container}>
                 <ul>
                     {title}
                     {lyrics}
@@ -222,6 +222,11 @@ export default class SingleSong extends React.Component {
 }
 
 
-const styles = {
-
+const Styles = {
+    container: {
+        width: '100%',
+        height: '100%',
+        overflowY: 'scroll',
+        padding: '0 30px 0 0',
+    },
 }
