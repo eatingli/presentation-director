@@ -142,23 +142,26 @@ export default class SingleSong extends React.Component {
         return (
             <div className="scroller" style={Styles.container}>
                 {/* 標題 */}
-                <input type="text" value={this.state.editTitle} placeholder="標題"
+                <input type="text" style={Styles.textTitle} value={this.state.editTitle} placeholder="標題"
                     onChange={(e) => this.setState({ editTitle: e.target.value })} />
                 <br />
 
                 {/* 描述 */}
-                <textarea rows="2" cols="90" value={this.state.editDescription} placeholder="描述"
-                    onChange={(e) => this.setState({ editDescription: e.target.value })}></textarea>
+                <textarea style={Styles.textDescription} rows="2" value={this.state.editDescription} placeholder="描述"
+                    onChange={(e) => {
+                        if (e.target.value.split('\n').length <= 2)
+                            this.setState({ editDescription: e.target.value })
+                    }}></textarea>
                 <br />
 
                 {/* 歌詞 */}
-                <textarea rows="32" cols="90" value={this.state.editLyrics} placeholder="歌詞"
+                <textarea className="scroller" style={Styles.textLyrics} rows="27" value={this.state.editLyrics} placeholder="歌詞"
                     onChange={(e) => this.setState({ editLyrics: e.target.value })}></textarea>
                 <br />
 
                 {/* 編輯按鈕 */}
-                <button onClick={this.handleBack.bind(this)}>Back</button>
-                <button onClick={this.handleSave.bind(this)}>Save</button>
+                <button style={Styles.btn} onClick={this.handleBack.bind(this)}>Back</button>
+                <button style={Styles.btn} onClick={this.handleSave.bind(this)}>Save</button>
 
             </div>
         )
@@ -199,11 +202,12 @@ export default class SingleSong extends React.Component {
 
         return (
             <div className="scroller" style={Styles.container}>
-                <ul>
+                <ul style={Styles.lyricList}>
                     {title}
                     {lyrics}
                 </ul>
-                <button onClick={this.handleEdit.bind(this)}>Edit</button>
+                <br />
+                <button style={Styles.btn} onClick={this.handleEdit.bind(this)}>Edit</button>
             </div >
         )
     }
@@ -227,6 +231,50 @@ const Styles = {
         width: '100%',
         height: '100%',
         overflowY: 'scroll',
-        padding: '0 30px 0 0',
+    },
+    lyricList: {
+        minWidth: '300px',
+        display: 'inline-block'
+    },
+    textTitle: {
+        width: '441px',
+        margin: '5px 0 5px 5px',
+        padding: '0 0 0 8px',
+        lineHeight: '23px',
+        color: '#ffffff',
+        backgroundColor: 'rgba(255, 255, 255, 0.05)',
+        border: '1px solid #1565C0',
+    },
+    textDescription: {
+        width: '440px',
+        margin: '5px 0 5px 5px',
+        padding: '0 0 0 8px',
+        lineHeight: '23px',
+        resize: 'none',
+        overflowY: 'hidden',
+        color: '#ffffff',
+        backgroundColor: 'rgba(255, 255, 255, 0.05)',
+        border: '1px solid #1565C0',
+    },
+    textLyrics: {
+        width: '800px',
+        margin: '5px 0 5px 5px',
+        padding: '5px 0 5px 8px',
+        lineHeight: '18px',
+        resize: 'none',
+        overflowY: 'scroll',
+        color: '#ffffff',
+        backgroundColor: 'rgba(255, 255, 255, 0.05)',
+        border: '1px solid #1565C0',
+    },
+    btn: {
+        width: '100px',
+        margin: '0 10px 10px 10px',
+        color: '#ffffff',
+        backgroundColor: '#434343',
+        border: '0',
+        fontSize: '17px',
+        letterSpacing: '1px',
+        boxShadow: '0 0 3px rgba(0, 0, 0, 0.4)',
     },
 }
