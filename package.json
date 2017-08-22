@@ -18,7 +18,7 @@
     "start-dev": "set NODE_ENV=development && electron .",
     "start": "set NODE_ENV=production && electron ."
   },
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "chokidar": "^1.7.0",
     "electron": "^1.6.11",
