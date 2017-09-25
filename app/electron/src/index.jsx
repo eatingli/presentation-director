@@ -1,8 +1,8 @@
 import path from 'path'
 import url from 'url'
-import Electron, { app, globalShortcut, BrowserWindow, ipcMain, dialog } from 'electron'
+import Electron, { app, Menu, globalShortcut, BrowserWindow, ipcMain, dialog } from 'electron'
 import * as Const from '../../common/const.js'
-import { mediaListOptionMeun, mediaItemMeun } from './menu.jsx'
+import { mediaListOptionMeun, mediaItemMeun, applicationMenu } from './menu.jsx'
 
 const DEV_MODE = process.env.NODE_ENV && process.env.NODE_ENV.trim() === 'development';
 
@@ -36,27 +36,6 @@ function devTool() {
 }
 
 /**
- * Setup development shortcut
- */
-function devShortcut() {
-
-    // Esc -> Exit App
-    globalShortcut.register('Escape', () =>
-        app.quit()
-    )
-
-    // Ctrl + R -> Reload
-    globalShortcut.register('Control+R', () =>
-        mainWindow.webContents.reload()
-    )
-
-    // Ctrl + D -> Toggle Development Tool contents.toggleDevTools()
-    globalShortcut.register('Control+D', () =>
-        mainWindow.webContents.toggleDevTools()
-    )
-}
-
-/**
  * Setup production shortcut
  */
 function prodShortcut() {
@@ -73,7 +52,9 @@ function createMainWindow() {
     // Create the browser window.
     mainWindow = new BrowserWindow({
         width: 1100,
-        height: 800
+        height: 800,
+        kiosk: false,
+        frame: true,
     })
 
     // Load app index page.
@@ -115,17 +96,23 @@ function getExternalDisplay() {
  */
 function creatPlayerWindow(bounds) {
 
-
     let config = {
         title: 'Player',
         x: bounds.x,
         y: bounds.y,
         width: bounds.width,
         height: bounds.height,
-        kiosk: true,
         frame: false,
         alwaysOnTop: true,
-        focusable: false,
+        resizable: false,
+    }
+
+    // 根據作業系統，全螢幕的解決方案不同
+    if (process.platform === 'darwin') {
+        config.fullscreen = true;
+    } else {
+        config.kiosk = true;
+        config.focusable = false;
     }
 
     /**
@@ -158,6 +145,9 @@ function isPlayerWindowShow() {
     return playerWindow != null && !playerWindow.isDestroyed();
 }
 
+
+// ---------------------------------------------------------------------------------------------------------------------------------------~---------------
+
 /**
  * Electron Ready
  */
@@ -167,12 +157,14 @@ app.on('ready', () => {
      * Development option
      */
     if (DEV_MODE) {
-        devShortcut();
         devTool();
         console.log('Development Mode');
     } else {
         prodShortcut();
     }
+
+    // Set app menu
+    Menu.setApplicationMenu(applicationMenu);
 
     /**
      * Creat Main Window
@@ -218,8 +210,10 @@ app.on('ready', () => {
 
             playerWindow.on('closed', function () {
                 playerWindow = null;
-                if (mainWindow)
-                    mainWindow.webContents.send(Const.IPC.PLAYER_CLOSE, '');
+                if (mainWindow) {
+
+                }
+                mainWindow.webContents.send(Const.IPC.PLAYER_CLOSE, '');
             })
 
         } else if (playerWindow) {
@@ -302,9 +296,7 @@ app.on('will-quit', function () {
  * Quit when all windows are closed.
  */
 app.on('window-all-closed', function () {
-    if (process.platform !== 'darwin') {
-        app.quit()
-    }
+    app.quit()
 })
 
 /**
