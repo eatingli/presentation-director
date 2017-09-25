@@ -1,5 +1,7 @@
 node_modules
 *.log
 presentation-director-*
+Presentation Director-*
 build
 .vscode
+.DS_Store
