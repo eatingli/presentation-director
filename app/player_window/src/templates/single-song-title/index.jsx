@@ -19,16 +19,7 @@ export default class SingleSongTitle extends React.Component {
                     <p style={Styles.descriptionLine}>{this.props.content.description1}</p>
                     <p style={Styles.descriptionLine}>{this.props.content.description2}</p>
                 </div>
-
-                {/* Title */}
-                {/* <p style={Styles.title1}>直到永遠</p> */}
-                {/* <p style={Styles.title2}>abcdefghijklmnopqrstuvwxyz</p> */}
-
-                {/* Description */}
-                {/* <div style={Styles.description}>
-                    <p style={Styles.descriptionLine}>中譯詞：趙治德/蕭郁芸</p>
-                    <p style={Styles.descriptionLine}>演唱：趙治德</p>
-                </div> */}
+                
             </div>
         )
     }

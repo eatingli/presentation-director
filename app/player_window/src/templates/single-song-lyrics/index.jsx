@@ -7,15 +7,17 @@ export default class SingleSongLyrics extends React.Component {
     }
 
     render() {
-        let content1 = this.props.content.content1;
-        let content2 = this.props.content.content2;
+        let lyric1 = this.props.content.lyric1;
+        let lyric2 = this.props.content.lyric2;
+
         // 解決空白內容被隱藏的問題
-        content1 = content1 ? content1 : "　";
-        content2 = content2 ? content2 : "　";
+        lyric1 = lyric1 ? lyric1 : "　";
+        lyric2 = lyric2 ? lyric2 : "　";
+
         return (
             <div style={Styles.container}>
-                <div style={Styles.content1}>{content1}</div>
-                <div style={Styles.content2}>{content2}</div>
+                <div style={Styles.content1}>{lyric1}</div>
+                <div style={Styles.content2}>{lyric2}</div>
             </div>
         )
     }
@@ -35,7 +37,7 @@ const Styles = {
         display: 'flex',
         flexDirection: 'column',
         overflow: 'hidden',
-        
+
         color: '#FFFFFF',
         textShadow: textShadow,
         fontFamily: 'NotoSansTC, Roboto',

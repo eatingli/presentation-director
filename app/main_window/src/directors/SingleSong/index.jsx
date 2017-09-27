@@ -92,7 +92,7 @@ export default class SingleSong extends React.Component {
     }
 
     titleTemplate() {
-        this.props.selectTemplate('SingleSongTitle');
+        this.props.selectTemplate('single-song-title');
         this.props.updateContent({
             title1: this.state.song.title1,
             title2: this.state.song.title2,
@@ -102,10 +102,10 @@ export default class SingleSong extends React.Component {
     }
 
     lyricsTemplate(lyric) {
-        this.props.selectTemplate('SingleSongLyrics')
+        this.props.selectTemplate('single-song-lyrics')
         this.props.updateContent({
-            content1: lyric.content1,
-            content2: lyric.content2
+            lyric1: lyric.content1,
+            lyric2: lyric.content2
         })
     }
 
@@ -142,7 +142,7 @@ export default class SingleSong extends React.Component {
         return (
             <div className="scroller" style={Styles.container}>
                 {/* 標題 */}
-                <input type="text" style={Styles.textTitle} value={this.state.editTitle} placeholder="標題"
+                <input type="text" style={Styles.textTitle} value={this.state.editTitle} placeholder="標題 ｜ 子標題"
                     onChange={(e) => this.setState({ editTitle: e.target.value })} />
                 <br />
 
@@ -155,7 +155,7 @@ export default class SingleSong extends React.Component {
                 <br />
 
                 {/* 歌詞 */}
-                <textarea className="scroller" style={Styles.textLyrics} rows="27" value={this.state.editLyrics} placeholder="歌詞"
+                <textarea className="scroller" style={Styles.textLyrics} rows="27" value={this.state.editLyrics} placeholder="歌詞 ｜ 子歌詞 [標記]"
                     onChange={(e) => this.setState({ editLyrics: e.target.value })}></textarea>
                 <br />
 

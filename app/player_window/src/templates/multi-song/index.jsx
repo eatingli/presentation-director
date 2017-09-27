@@ -8,23 +8,25 @@ export default class SingleSongLyrics extends React.Component {
 
     render() {
         let title = this.props.content.title || "　";
-        let content1 = this.props.content.content1 || "　";
-        let content2 = this.props.content.content2 || "　";
-        let content3 = this.props.content.content3 || "　";
-        let content4 = this.props.content.content4 || "　";
+        let lyric1 = this.props.content.lyric1 || "　";
+        let lyric2 = this.props.content.lyric2 || "　";
+        let lyric3 = this.props.content.lyric3 || "　";
+        let lyric4 = this.props.content.lyric4 || "　";
 
         return (
             <div style={Styles.container}>
+                
                 {/* Title */}
                 <div style={Styles.title}>
                     {title}
                 </div>
+
                 {/* Content */}
                 <div style={Styles.content}>
-                    <div style={Styles.row}>{content1}</div>
-                    <div style={Styles.row}>{content2}</div>
-                    <div style={Styles.row}>{content3}</div>
-                    <div style={Styles.row}>{content4}</div>
+                    <div style={Styles.row}>{lyric1}</div>
+                    <div style={Styles.row}>{lyric2}</div>
+                    <div style={Styles.row}>{lyric3}</div>
+                    <div style={Styles.row}>{lyric4}</div>
                 </div>
             </div>
         )

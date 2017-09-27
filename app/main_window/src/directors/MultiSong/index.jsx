@@ -88,18 +88,18 @@ export default class SingleSong extends React.Component {
 
     multiTemplate(part) {
         console.log(part);
-        this.props.selectTemplate('MultiSong');
+        this.props.selectTemplate('multi-song');
         this.props.updateContent({
             title: this.state.song.title,
-            content1: part[0] ? part[0].content : '',
-            content2: part[1] ? part[1].content : '',
-            content3: part[2] ? part[2].content : '',
-            content4: part[3] ? part[3].content : '',
+            lyric1: part[0] ? part[0].content : '',
+            lyric2: part[1] ? part[1].content : '',
+            lyric3: part[2] ? part[2].content : '',
+            lyric4: part[3] ? part[3].content : '',
         })
     }
 
     blackTemplate() {
-        this.props.selectTemplate('Color');
+        this.props.selectTemplate('color');
         this.props.updateContent({
             color: '#000000'
         });
@@ -141,7 +141,7 @@ export default class SingleSong extends React.Component {
                 <br />
 
                 {/* 歌詞 */}
-                <textarea className="scroller" style={Styles.textLyrics} rows="27" value={this.state.editLyrics} placeholder="歌詞"
+                <textarea className="scroller" style={Styles.textLyrics} rows="27" value={this.state.editLyrics} placeholder="歌詞 [標記]"
                     onChange={(e) => this.setState({ editLyrics: e.target.value })}></textarea>
                 <br />
 
