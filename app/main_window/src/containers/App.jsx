@@ -12,8 +12,7 @@ export default class App extends React.Component {
         super(props);
         this.state = {
             path: '',
-            fileList: [],
-            mediaList: [],
+            mediaList: [],  // 媒體清單(解析過後)
             selectedMedia: -1,
             contextMenuTargetMedia: -1,
             launched: false,
@@ -123,11 +122,11 @@ export default class App extends React.Component {
 
         Ipc.onMediaRename((file) => {
             let media = this.state.mediaList[this.state.contextMenuTargetMedia];
-            let oldFile = this.state.fileList[this.state.contextMenuTargetMedia];
+            let oldFile = media.filename;
             let newFile = Path.basename(file);
             if (!oldFile || !newFile || oldFile === newFile) return;
 
-            this.fileHelper.saveFile(newFile, JSON.stringify(media))
+            this.fileHelper.saveFile(newFile, JSON.stringify(media.file))
                 .then(() => this.fileHelper.deleteFile(oldFile))
                 .then(() => this.updateFileList())
                 .catch((e) => { console.error(e); })
@@ -135,7 +134,7 @@ export default class App extends React.Component {
 
         Ipc.onMediaDelete((isDelete) => {
             if (!isDelete) return;
-            let filename = this.state.fileList[this.state.contextMenuTargetMedia];
+            let filename = this.state.mediaList[this.state.contextMenuTargetMedia].filename;
             this.fileHelper.deleteFile(filename)
                 .then(() => {
                     this.updateFileList();
@@ -160,31 +159,31 @@ export default class App extends React.Component {
             .then((files) => {
 
                 let counter = files.length;
-                let fileList = [];
                 let mediaList = [];
                 let err = [];
 
                 let loopLoad = () => {
-                    let file = files[--counter]
-                    fileHelper.loadFile(file)
+                    let filename = files[--counter]
+                    fileHelper.loadFile(filename)
                         .then((data) => {
 
                             // 解析檔案
-                            let media = JSON.parse(data);
-                            if (media && media.director) {
-                                fileList.push(file);
-                                mediaList.push(media);
+                            let file = JSON.parse(data);
+                            if (file && file.director) {
+                                mediaList.push({
+                                    filename:filename,
+                                    file:file
+                                });
                             }
                         })
                         .catch((e) => {
                             console.error(e)
-                            err.push(file);
+                            err.push(filename);
                         })
                         .then(() => {
                             // 終止條件檢查
                             if (counter == 0) {
                                 this.setState({
-                                    fileList: fileList,
                                     mediaList: mediaList,
                                     selectedMedia: -1,
                                     director: '',
@@ -201,7 +200,6 @@ export default class App extends React.Component {
                 if (counter > 0) loopLoad();
                 else {
                     this.setState({
-                        fileList: [],
                         mediaList: [],
                         selectedMedia: -1,
                         director: '',
@@ -252,14 +250,14 @@ export default class App extends React.Component {
 
     handleMediaItemClick(index) {
         console.log('handleMediaItemClick()', index);
-        let filename = this.state.fileList[index];
         let media = this.state.mediaList[index];
+        let filename = media.filename;
 
-        this.setState({ selectedMedia: index, director: media.director });
+        this.setState({ selectedMedia: index, director: media.file.director });
 
         // 重點: 確保loadMedia比較晚被呼叫，解決變換Director時遇到的問題。
         setImmediate(() => {
-            this.loadMedia(filename, media);
+            this.loadMedia(filename, media.file);
         })
 
     }
@@ -275,8 +273,9 @@ export default class App extends React.Component {
 
         // Media List
         let mediaList = this.state.mediaList.map((media, i) => {
-            let mediaName = FileHelper.getFilename(this.state.fileList[i]);
-            let title = mediaName + ` (${media.director})`;
+            let mediaName = FileHelper.getFilename(media.filename);
+            let title = mediaName + ` (${media.file.director})`;
+            // let title = mediaName;
             return (
                 <MediaItem key={i} title={title}
                     selected={i == this.state.selectedMedia}
@@ -294,8 +293,8 @@ export default class App extends React.Component {
             pathStr = pathStr.substring(0, 20) + '...';
 
         // mediaName
-        let selectedFile = this.state.fileList[this.state.selectedMedia];
-        let mediaName = selectedFile ? FileHelper.getFilename(selectedFile) : 'Media Name';
+        let selectedMedia = this.state.mediaList[this.state.selectedMedia];
+        let mediaName = selectedMedia ? FileHelper.getFilename(selectedMedia.filename) : 'Media Name';
 
         return (
             <div style={GridStyle.container}>
@@ -334,10 +333,13 @@ export default class App extends React.Component {
                     {/* Media List */}
                     <div style={GridStyle.centerL}>
                         <ul className="scroller" style={MainStyle.mediaList}>
+                            {/* 提示 */}
                             {this.state.path ? null :
                                 (<li style={MainStyle.mediaListPrompt}>Click ... to Select Path</li>)}
                             {this.state.path && this.state.mediaList.length == 0 ?
                                 (<li style={MainStyle.mediaListPrompt}>Click ... to Add Media</li>) : null}
+                            
+                            {/* Media List */}
                             {mediaList}
                         </ul>
                     </div>
