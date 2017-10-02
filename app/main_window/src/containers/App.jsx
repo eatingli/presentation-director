@@ -13,8 +13,8 @@ export default class App extends React.Component {
         this.state = {
             path: '',
             mediaList: [],  // 媒體清單(解析過後)
-            selectedMedia: -1,
-            contextMenuTargetMedia: -1,
+            selectedMedia: null,
+            contextMenuTargetMedia: null,
             launched: false,
 
             director: '',
@@ -121,7 +121,7 @@ export default class App extends React.Component {
         })
 
         Ipc.onMediaRename((file) => {
-            let media = this.state.mediaList[this.state.contextMenuTargetMedia];
+            let media = this.state.contextMenuTargetMedia;
             let oldFile = media.filename;
             let newFile = Path.basename(file);
             if (!oldFile || !newFile || oldFile === newFile) return;
@@ -134,7 +134,7 @@ export default class App extends React.Component {
 
         Ipc.onMediaDelete((isDelete) => {
             if (!isDelete) return;
-            let filename = this.state.mediaList[this.state.contextMenuTargetMedia].filename;
+            let filename = this.state.contextMenuTargetMedia.filename;
             this.fileHelper.deleteFile(filename)
                 .then(() => {
                     this.updateFileList();
@@ -171,8 +171,8 @@ export default class App extends React.Component {
                             let file = JSON.parse(data);
                             if (file && file.director) {
                                 mediaList.push({
-                                    filename:filename,
-                                    file:file
+                                    filename: filename,
+                                    file: file
                                 });
                             }
                         })
@@ -185,7 +185,7 @@ export default class App extends React.Component {
                             if (counter == 0) {
                                 this.setState({
                                     mediaList: mediaList,
-                                    selectedMedia: -1,
+                                    selectedMedia: null,
                                     director: '',
                                 });
                                 if (err.length > 0) alert('Media Loading Failed : \n ' + err.join('\n '))
@@ -201,7 +201,7 @@ export default class App extends React.Component {
                 else {
                     this.setState({
                         mediaList: [],
-                        selectedMedia: -1,
+                        selectedMedia: null,
                         director: '',
                     });
                 }
@@ -243,17 +243,15 @@ export default class App extends React.Component {
         Ipc.showMenuMediaListOption();
     }
 
-    handleMediaItemContextMenu(index) {
+    handleMediaItemContextMenu(media) {
         Ipc.showMenuMediaItem();
-        this.setState({ contextMenuTargetMedia: index });
+        this.setState({ contextMenuTargetMedia: media });
     }
 
-    handleMediaItemClick(index) {
-        console.log('handleMediaItemClick()', index);
-        let media = this.state.mediaList[index];
+    handleMediaItemClick(media) {
         let filename = media.filename;
 
-        this.setState({ selectedMedia: index, director: media.file.director });
+        this.setState({ selectedMedia: media, director: media.file.director });
 
         // 重點: 確保loadMedia比較晚被呼叫，解決變換Director時遇到的問題。
         setImmediate(() => {
@@ -271,17 +269,56 @@ export default class App extends React.Component {
             if (!Director) throw new Error('Director Load Error');
         }
 
-        // Media List
-        let mediaList = this.state.mediaList.map((media, i) => {
+        // Media List，根據類別插入分類的標題
+        let mediaList = [];
+        let tempMediaList = this.state.mediaList.slice();
+
+        while (tempMediaList.length > 0) {
+
+            let kindList = []
+            let director = tempMediaList[0].file.director;
+
+            // 尋找同類別的媒體
+            tempMediaList.forEach((media, index) => {
+                if (media.file.director === director) kindList.push(media);
+            })
+
+            // 從暫存清單中移除
+            kindList.forEach((media) => {
+                tempMediaList.splice(tempMediaList.indexOf(media), 1);
+            })
+
+            // 重新排序後
+            kindList.sort((a, b) => {
+                if (a.filename > b.filename) return 1;
+                else if (a.filename < b.filename) return -1;
+                else return 0;
+            })
+
+            // 加到媒體清單中，並放上分類標題
+            mediaList.push({ kindTitle: director });
+            mediaList = mediaList.concat(kindList);
+
+        }
+
+        // 轉換
+        mediaList = mediaList.map((item, i) => {
+
+            // 標題
+            if (item.kindTitle) return (
+                <li key={i} style={MainStyle.mediaListKindTitle}> # {item.kindTitle}</li>
+            )
+
+            // 內容
+            let media = item;
             let mediaName = FileHelper.getFilename(media.filename);
-            let title = mediaName + ` (${media.file.director})`;
-            // let title = mediaName;
+            let title = mediaName;
             return (
                 <MediaItem key={i} title={title}
-                    selected={i == this.state.selectedMedia}
+                    selected={media == this.state.selectedMedia}
                     editing={false}
-                    onClick={(e) => this.handleMediaItemClick(i)}
-                    onContextMenu={(e) => this.handleMediaItemContextMenu(i)}
+                    onClick={(e) => this.handleMediaItemClick(media)}
+                    onContextMenu={(e) => this.handleMediaItemContextMenu(media)}
                 />
             )
         });
@@ -293,7 +330,7 @@ export default class App extends React.Component {
             pathStr = pathStr.substring(0, 20) + '...';
 
         // mediaName
-        let selectedMedia = this.state.mediaList[this.state.selectedMedia];
+        let selectedMedia = this.state.selectedMedia;
         let mediaName = selectedMedia ? FileHelper.getFilename(selectedMedia.filename) : 'Media Name';
 
         return (
@@ -338,7 +375,7 @@ export default class App extends React.Component {
                                 (<li style={MainStyle.mediaListPrompt}>Click ... to Select Path</li>)}
                             {this.state.path && this.state.mediaList.length == 0 ?
                                 (<li style={MainStyle.mediaListPrompt}>Click ... to Add Media</li>) : null}
-                            
+
                             {/* Media List */}
                             {mediaList}
                         </ul>

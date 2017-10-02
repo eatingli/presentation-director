@@ -120,6 +120,11 @@ export const MainStyle = {
         textAlign: 'center',
         margin: '45px 0 0 0'
     },
+    mediaListKindTitle: {
+        margin: '6px 0px 0px 2px',
+        backgroundColor: 'rgba(255, 255, 255, 0.04)',
+        lineHeight: '30px',
+    },
     launchBtn: {
         margin: '1px 2px 1px 1px',
         border: 0,

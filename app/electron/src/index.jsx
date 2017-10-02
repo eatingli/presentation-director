@@ -157,7 +157,7 @@ app.on('ready', () => {
      * Development option
      */
     if (DEV_MODE) {
-        devTool();
+        // devTool();
         console.log('Development Mode');
     } else {
         prodShortcut();
