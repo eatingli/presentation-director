@@ -6,7 +6,7 @@
   "author": "Eating Li <suwako.www@gmail.com>",
   "main": "./app/electron/build/bundle.js",
   "scripts": {
-    "build": "electron-packager . --asar=true --ignore=node_modules/electron-* --ignore=src --overwrite --version=1.6.11",
+    "build": "electron-packager . --asar=true --ignore=node_modules/electron-* --ignore=src --ignore=res --overwrite --version=1.6.11",
     "copy-win": "xcopy \".\\res\" \".\\PresentationDirector-win32-x64\\res\" /E /K /Y /I",
     "copy-mac": "..",
     "build-win": "npm run build -- --platform=win32 --arch=x64 && npm run copy-win",
