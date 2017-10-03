@@ -211,9 +211,8 @@ app.on('ready', () => {
             playerWindow.on('closed', function () {
                 playerWindow = null;
                 if (mainWindow) {
-
+                    mainWindow.webContents.send(Const.IPC.PLAYER_CLOSE, '');
                 }
-                mainWindow.webContents.send(Const.IPC.PLAYER_CLOSE, '');
             })
 
         } else if (playerWindow) {
