@@ -8,7 +8,7 @@
   "scripts": {
     "build": "electron-packager . --asar=true --ignore=node_modules/electron-* --ignore=src --overwrite --version=1.6.11",
     "copy-win": "xcopy \".\\res\" \".\\PresentationDirector-win32-x64\\res\" /E /K /Y /I",
-    "copy-mac": "..",
+    "copy-mac": "cp -R ./res ./PresentationDirector-darwin-x64/res",
     "build-win": "npm run build -- --platform=win32 --arch=x64 && npm run copy-win",
     "build-mac": "npm run build -- --platform=darwin --arch=x64 && npm run copy-mac",
     "wp-dev-server": "set NODE_ENV=development && webpack --config webpack.config.server.js --watch --progress --colors",
