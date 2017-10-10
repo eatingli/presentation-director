@@ -2,12 +2,15 @@ import path from 'path'
 import url from 'url'
 import Electron, { app, Menu, globalShortcut, BrowserWindow, ipcMain, dialog } from 'electron'
 import * as Const from '../../common/const.js'
-import { mediaListOptionMeun, mediaItemMeun, applicationMenu } from './menu.jsx'
+import { mediaListOptionMeun, mediaItemMeun, AppMenu } from './menu.jsx'
 
 const DEV_MODE = process.env.NODE_ENV && process.env.NODE_ENV.trim() === 'development';
 
 let mainWindow = null
 let playerWindow = null
+let playerDisplay = null
+let isPlayerFullScreen = true
+
 
 /**
  * Build up development tool
@@ -78,17 +81,14 @@ function createMainWindow() {
 /**
  * 
  */
-function getExternalDisplay() {
-    var displays = Electron.screen.getAllDisplays();
-    var externalDisplay = null;
-    for (var i in displays) {
-        if (displays[i].bounds.x != 0 || displays[i].bounds.y != 0) {
-            externalDisplay = displays[i];
-            break;
-        }
+function getDefaultDisplay() {
+    let displays = Electron.screen.getAllDisplays();
+    let primaryDisplay = Electron.screen.getPrimaryDisplay();
+    if (displays.length > 1) {
+        return displays.splice(displays.indexOf(primaryDisplay), 1)[0];
+    } else {
+        return primaryDisplay;
     }
-
-    return externalDisplay;
 }
 
 /**
@@ -107,18 +107,22 @@ function creatPlayerWindow(bounds) {
         resizable: false,
     }
 
-    // 根據作業系統，全螢幕的解決方案不同
-    if (process.platform === 'darwin') {
-        config.fullscreen = true;
-    } else {
-        config.kiosk = true;
-        config.focusable = false;
-    }
-
     /**
      * Dev
      */
     if (DEV_MODE) {
+        isPlayerFullScreen = false;
+    }
+
+    if (isPlayerFullScreen) {
+        // 根據作業系統，全螢幕的解決方案不同
+        if (process.platform === 'darwin') {
+            config.fullscreen = true;
+        } else {
+            config.kiosk = true;
+            config.focusable = false;
+        }
+    } else {
         config.kiosk = false;
         config.frame = true;
         config.alwaysOnTop = false;
@@ -135,9 +139,6 @@ function creatPlayerWindow(bounds) {
         slashes: true
     }));
 
-    // Open the DevTools.
-    // if (DEV_MODE)
-    // playerWindow.webContents.openDevTools()
 
     return playerWindow;
 }
@@ -147,7 +148,7 @@ function isPlayerWindowShow() {
 }
 
 
-// ---------------------------------------------------------------------------------------------------------------------------------------~---------------
+// ----------------------------------------------------------------------------------------------------------------
 
 /**
  * Electron Ready
@@ -164,8 +165,24 @@ app.on('ready', () => {
         prodShortcut();
     }
 
-    // Set app menu
-    Menu.setApplicationMenu(applicationMenu);
+    // Setup app menu
+    let setupMenu = () => {
+        let appMenu = new AppMenu();
+        appMenu.setDisplays(Electron.screen.getAllDisplays(), (selectedDisplay) => {
+            playerDisplay = selectedDisplay;
+        });
+        appMenu.onPlayerFullScreen((bool) => { isPlayerFullScreen = bool })
+        Menu.setApplicationMenu(appMenu.get());
+    }
+    setupMenu();
+
+    // 監聽螢幕硬體變化
+    let onScreenChange = () => {
+        setupMenu();
+        playerDisplay = getDefaultDisplay();
+    }
+    Electron.screen.on('display-added', onScreenChange)
+    Electron.screen.on('display-removed', onScreenChange)
 
     /**
      * Creat Main Window
@@ -196,20 +213,12 @@ app.on('ready', () => {
         if (!isPlayerWindowShow()) {
 
             // Show Player Window
-            let externalDisplay = getExternalDisplay();
-            if (externalDisplay)
-                playerWindow = creatPlayerWindow(externalDisplay.bounds);
-            else
-                playerWindow = creatPlayerWindow({
-                    x: 0,
-                    y: 0,
-                    width: 800,
-                    height: 700
-                });
+            let externalDisplay = playerDisplay || getDefaultDisplay();
+            playerWindow = creatPlayerWindow({ ...externalDisplay.bounds, width: 800, height: 750 });
 
             mainWindow.webContents.send(Const.IPC.PLAYER_OPEN, '');
 
-            playerWindow.on('closed', function () {
+            playerWindow.once('closed', function () {
                 playerWindow = null;
                 if (mainWindow) {
                     mainWindow.webContents.send(Const.IPC.PLAYER_CLOSE, '');
@@ -217,7 +226,7 @@ app.on('ready', () => {
             })
 
         } else if (playerWindow) {
-            // Destroy Player Window
+            // Close Player Window
             playerWindow.destroy();
         }
     })
