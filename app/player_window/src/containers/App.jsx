@@ -38,7 +38,7 @@ class App extends React.Component {
     render() {
 
         // Hot require Template components
-        let Template = require('../templates/' + this.state.template + '/index.jsx').default
+        let Template = require(`../../../templates/${this.state.template}/src/index.jsx`).default
         if (!Template) throw new Error('Template Load Error');
 
         /**

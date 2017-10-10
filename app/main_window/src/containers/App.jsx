@@ -265,7 +265,7 @@ export default class App extends React.Component {
         // Hot require Director components
         let Director = null;
         if (this.state.director) {
-            Director = require('../directors/' + this.state.director + '/index.jsx').default
+            Director = require(`../../../directors/${this.state.director}/src/index.jsx`).default
             if (!Director) throw new Error('Director Load Error');
         }
 

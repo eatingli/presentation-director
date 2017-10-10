@@ -34,19 +34,33 @@ const config = {
 
     /**
      * 引用Loader。以正規表達式來選擇特定檔案，並指明loader
-     * 此.jsx? 代表.js 或者 .jsx
      */
     module: {
-        rules: [{
-            test: /\.jsx?$/,
-            exclude: /node_modules/,
-            use: {
-                loader: 'babel-loader',
-                options: {
-                    cacheDirectory: true
+        rules: [
+            {
+                test: /\.jsx?$/,
+                exclude: /node_modules/,
+                use: {
+                    loader: 'babel-loader',
+                    options: {
+                        cacheDirectory: true
+                    }
                 }
-            }
-        }, ],
+            },
+            {
+                test: /\.txt$/,
+                include: [
+                    path.resolve(__dirname, 'app')
+                ],
+                use: {
+                    loader: 'file-loader',
+                    options: {
+                        name: '[path][name].[ext]',
+                        outputPath: 'app/main_window/build/',
+                        publicPath: '../../' // 消除重複的路徑(app/main_window)
+                    }
+                }
+            }],
     },
 
     /**

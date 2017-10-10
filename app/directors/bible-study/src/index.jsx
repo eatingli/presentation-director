@@ -4,13 +4,17 @@ import fs from 'fs';
 import path from 'path';
 import BibleStudy from './lib/bible-study.js';
 
+import cuv from '../res/bible-versions/cuv.txt'
+
 const BOOKS_LABEL = ['Gen', 'Exo', 'Lev', 'Num', 'Deu', 'Jos', 'Jug', 'Rut', '1Sa', '2Sa', '1Ki', '2Ki', '1Ch', '2Ch', 'Ezr', 'Neh', 'Est', 'Job', 'Psm', 'Pro', 'Ecc', 'Son', 'Isa', 'Jer', 'Lam', 'Eze', 'Dan', 'Hos', 'Joe', 'Amo', 'Oba', 'Jon', 'Mic', 'Nah', 'Hab', 'Zep', 'Hag', 'Zec', 'Mal', 'Mat', 'Mak', 'Luk', 'Jhn', 'Act', 'Rom', '1Co', '2Co', 'Gal', 'Eph', 'Phl', 'Col', '1Ts', '2Ts', '1Ti', '2Ti', 'Tit', 'Phm', 'Heb', 'Jas', '1Pe', '2Pe', '1Jn', '2Jn', '3Jn', 'Jud', 'Rev']
 
 export default class SingleSong extends React.Component {
 
     constructor(props) {
         super(props);
-        let bible = fs.readFileSync(path.join('res', 'bible-version', 'cuv.txt'), { encoding: 'utf8' })
+        console.log(__dirname);
+        console.log(cuv)
+        let bible = fs.readFileSync(path.join(__dirname, cuv), { encoding: 'utf8' })
         this.bs = new BibleStudy(bible);
         this.state = {
             book: null,

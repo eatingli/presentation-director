@@ -123,6 +123,7 @@ function creatPlayerWindow(bounds) {
         config.frame = true;
         config.alwaysOnTop = false;
         config.focusable = true;
+        config.fullscreen = false;
     }
 
     let playerWindow = new BrowserWindow(config)
