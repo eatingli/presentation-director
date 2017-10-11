@@ -9,7 +9,7 @@ const DEV_MODE = process.env.NODE_ENV && process.env.NODE_ENV.trim() === 'develo
 let mainWindow = null
 let playerWindow = null
 let playerDisplay = null
-let isPlayerFullScreen = true
+let isPlayerFullScreen = !DEV_MODE;
 
 
 /**
@@ -102,19 +102,14 @@ function creatPlayerWindow(bounds) {
         y: bounds.y,
         width: bounds.width,
         height: bounds.height,
-        frame: false,
-        alwaysOnTop: true,
-        resizable: false,
-    }
-
-    /**
-     * Dev
-     */
-    if (DEV_MODE) {
-        isPlayerFullScreen = false;
     }
 
     if (isPlayerFullScreen) {
+
+        config.frame = false;
+        config.alwaysOnTop = true;
+        config.resizable = false;
+
         // 根據作業系統，全螢幕的解決方案不同
         if (process.platform === 'darwin') {
             config.fullscreen = true;
