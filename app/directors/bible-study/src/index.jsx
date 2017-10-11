@@ -12,10 +12,10 @@ export default class SingleSong extends React.Component {
 
     constructor(props) {
         super(props);
-        console.log(__dirname);
-        console.log(cuv)
+
         let bible = fs.readFileSync(path.join(__dirname, cuv), { encoding: 'utf8' })
         this.bs = new BibleStudy(bible);
+        
         this.state = {
             book: null,
             chapter: null,

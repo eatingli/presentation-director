@@ -79,6 +79,13 @@ export default class App extends React.Component {
                     else
                         alert('Invalid Path')
                     break;
+                case Const.MENU_MEDIA_LIST_.BIBLE_STUDY:
+                    this.newDirector = 'bible-study';
+                    if (this.checkPath())
+                        Ipc.showNewMediaDialog();
+                    else
+                        alert('Invalid Path')
+                    break;
             }
         })
 

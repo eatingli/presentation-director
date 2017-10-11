@@ -262,6 +262,11 @@ mediaListOptionMeun.append(new MenuItem({
         click: function (item, focusedWindow) {
             focusedWindow.webContents.send(Const.IPC.MENU_MEDIA_LIST, Const.IPC.MENU_MEDIA_LIST_.MULTI_SONG);
         }
+    }, {
+        label: 'Bible Study',
+        click: function (item, focusedWindow) {
+            focusedWindow.webContents.send(Const.IPC.MENU_MEDIA_LIST, Const.IPC.MENU_MEDIA_LIST_.BIBLE_STUDY);
+        }
     }]
 }))
 

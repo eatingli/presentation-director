@@ -19,6 +19,7 @@ export class IPC {
         NEW_MEDIA: 'D0',
         SINGLE_SONG: 'D1',
         MULTI_SONG: 'D2',
+        BIBLE_STUDY: 'D3',
     }
 
     static MENU_MEDIA_ITEM = 'MENU_MEDIA_ITEM';
