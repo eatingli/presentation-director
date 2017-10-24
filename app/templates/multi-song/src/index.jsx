@@ -49,7 +49,7 @@ const Styles = {
 
         color: '#FFFFFF',
         textShadow: textShadow,
-        fontFamily: 'NotoSansTC, Roboto',
+        fontFamily: 'NotoSansTC, 微軟正黑體, Roboto',
         overflow: 'hidden',
     },
     title: {
