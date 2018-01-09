@@ -1,3 +1,4 @@
+
 export class IPC {
 
     /**
@@ -5,6 +6,7 @@ export class IPC {
      */
     static SELECT_TEMPLATE = 'SELECT_TEMPLATE';
     static UPDATE_CONTENT = 'UPDATE_CONTENT';
+    static SET_ATTRIBUTE = 'SET_ATTRIBUTE';
     static TOGGLE_PLAYER = 'TOGGLE_PLAYER';
     static PLAYER_OPEN = 'PLAYER_OPEN';
     static PLAYER_CLOSE = 'PLAYER_CLOSE';

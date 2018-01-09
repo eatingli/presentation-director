@@ -7,8 +7,7 @@ export default class SingleSongParser {
         this.lineSpliter = '\n';
         this.title1 = '';
         this.title2 = '';
-        this.description1 = '';
-        this.description2 = '';
+        this.descriptions = '';
         this.lyrics = [];
     }
 
@@ -19,8 +18,7 @@ export default class SingleSongParser {
         return {
             title1: this.title1,
             title2: this.title2,
-            description1: this.description1,
-            description2: this.description2,
+            descriptions: this.descriptions,
             lyrics: this.lyrics
         }
     }
@@ -42,9 +40,8 @@ export default class SingleSongParser {
      * 描述
      */
     parseDescription(str) {
-        let descriptions = str.split(this.lineSpliter);
-        this.description1 = descriptions[0];
-        this.description2 = descriptions.length > 1 ? descriptions[1] : '';
+        let descriptions = str.trim().split(this.lineSpliter);
+        this.descriptions = descriptions.map((d) => d.trim());
     }
 
     /**

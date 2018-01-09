@@ -7,58 +7,94 @@ export default class SingleSongLyrics extends React.Component {
     }
 
     render() {
-        let lyric1 = this.props.content.lyric1;
-        let lyric2 = this.props.content.lyric2;
+        /* Content */
+        let lyric1 = this.props.content.lyric1 || "　"; // 解決空白內容被隱藏的問題
+        let lyric2 = this.props.content.lyric2 || "　";
 
-        // 解決空白內容被隱藏的問題
-        lyric1 = lyric1 ? lyric1 : "　";
-        lyric2 = lyric2 ? lyric2 : "　";
+        /* Attribute */
+        let attribute = this.props.attribute || {};
+        let verticalOffset = attribute.verticalOffset || 5;
+        let lyric2Visible = attribute.lyric2Visible || (attribute.lyric2Visible == false ? false : true);
+        let lyric1FontSize = attribute.lyric1FontSize || 36;
+        let lyric2FontSize = attribute.lyric2FontSize || 20;
+        let backgroundColor = attribute.backgroundColor || '#000000'
+        let fontColor = attribute.fontColor || '#FFFFFF';
+        let fontShadowLevel = attribute.fontShadowLevel || 20;
+        let fontShadowColor = attribute.fontShadowColor || '#3030aa';
+
+        /* Check Attribute */
+
+        // textShadow
+        let textShadow = [];
+        for (let i = 0; i < fontShadowLevel; i++)
+            textShadow.push(`0 0 ${fontShadowLevel * 0.6}px ${fontShadowColor}`);
+        textShadow = textShadow.join(',');
+
+        /* Style */
+        let containerStyle = {
+            ...Styles.container,
+            background: backgroundColor,
+            color: fontColor,
+            textShadow: textShadow,
+            // textShadow: `0 0 ${fontShadowLevel}px ${fontShadowColor}`,
+            // WebkitTextStroke: `${fontShadowLevel * 0.1}px ${fontShadowColor}`,
+        }
+
+        let lyric1Style = {
+            ...Styles.content1,
+            margin: `auto 0px ${lyric2Visible ? '0px' : verticalOffset + '%'} 0px`,
+            fontSize: `${lyric1FontSize}px`,
+            // lineHeight: `${lyric1FontSize * 1.3}px`,
+        }
+
+        let lyric2Style = {
+            ...Styles.content2,
+            margin: `0px 0px ${verticalOffset}% 0px`,
+            fontSize: `${lyric2FontSize}px`,
+            // lineHeight: `${lyric1FontSize * 1.1}px`,
+            display: lyric2Visible ? '' : 'None',
+        }
 
         return (
-            <div style={Styles.container}>
-                <div style={Styles.content1}>{lyric1}</div>
-                <div style={Styles.content2}>{lyric2}</div>
+            <div style={containerStyle}>
+                <div style={lyric1Style}>{lyric1}</div>
+                <div style={lyric2Style}>{lyric2}</div>
             </div>
         )
     }
 }
 
-// textShadow
-let textShadow = [];
-for (let i = 0; i < 20; i++)
-    textShadow.push('0 0 12px #3030aa');
-textShadow = textShadow.join(',');
 
 const Styles = {
     container: {
         width: '100%',
         height: '100%',
-        background: '#000000',
+        // background: '#000000',
         display: 'flex',
         flexDirection: 'column',
         overflow: 'hidden',
 
-        color: '#FFFFFF',
-        textShadow: textShadow,
-        fontFamily: 'NotoSansTC, 微軟正黑體, Roboto',
+        // color: '#FFFFFF',
+        // textShadow: textShadow,
+        fontFamily: 'NotoSansTC, Roboto, 微軟正黑體',
     },
     content1: {
-        margin: 'auto 0px 0px 0px',
+        // margin: 'auto 0px auto 0px',
         display: 'flex',
         flexDirection: 'column',
-        fontSize: '5.0em',
+        // fontSize: '7.2em',
         textAlign: 'center',
-        lineHeight: '1.5em',
+        // lineHeight: '1.5em',
         wordSpacing: '0.2em',
         whiteSpace: 'nowrap',
     },
     content2: {
-        margin: '0px 0px 70px 0px',
+        // margin: '0px 0px 0px 0px',
         display: 'flex',
         flexDirection: 'column',
-        fontSize: '4em',
+        // fontSize: '5.8em',
         textAlign: 'center',
-        lineHeight: '1em',
+        // lineHeight: '1em',
         whiteSpace: 'nowrap',
     }
 }

@@ -1,6 +1,6 @@
 import React from 'react';
-import Electron, { ipcRenderer as ipc } from 'electron';
-import Ipc from '../service/ipc.jsx';
+import Electron, { ipcRenderer } from 'electron';
+import * as Consts from '../../../common/const.js';
 
 class App extends React.Component {
 
@@ -8,30 +8,30 @@ class App extends React.Component {
         super(props);
         this.state = {
             template: 'color',
-            content: {}
+            attribute: {},
+            content: {},
         }
     }
 
     componentDidMount() {
-        /**
-         * Receive
-         */
-        Ipc.onUpdateContent((content) => {
-            this.setState({ content: JSON.parse(content) });
-            console.log('Content: ', content);
-        });
 
-        Ipc.onSelectTemplate((template) => {
+        ipcRenderer.on(Consts.IPC.SELECT_TEMPLATE, (event, template) => {
+
             // 判定Template實際上有無變化
             if (this.state.template !== template) {
-                this.setState({
-                    template: template,
-                });
-            } else {
-
+                this.setState({ template: template });
             }
-
             console.log('Template: ', template);
+        });
+
+        ipcRenderer.on(Consts.IPC.SET_ATTRIBUTE, (event, attribute) => {
+            this.setState({ attribute: JSON.parse(attribute) })
+            console.log('Attribute: ', attribute);
+        });
+
+        ipcRenderer.on(Consts.IPC.UPDATE_CONTENT, (event, content) => {
+            this.setState({ content: JSON.parse(content) });
+            console.log('Content: ', content);
         });
     }
 
@@ -45,7 +45,7 @@ class App extends React.Component {
          * 
          */
         return (
-            <Template content={this.state.content} />
+            <Template attribute={this.state.attribute} content={this.state.content} />
         )
     }
 }

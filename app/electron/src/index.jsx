@@ -1,7 +1,7 @@
 import path from 'path'
 import url from 'url'
 import Electron, { app, Menu, globalShortcut, BrowserWindow, ipcMain, dialog } from 'electron'
-import * as Const from '../../common/const.js'
+import * as Consts from '../../common/const.js'
 import { mediaListOptionMeun, mediaItemMeun, AppMenu } from './menu.jsx'
 
 const DEV_MODE = process.env.NODE_ENV && process.env.NODE_ENV.trim() === 'development';
@@ -188,21 +188,28 @@ app.on('ready', () => {
     /**
      * Basic
      */
-    ipcMain.on(Const.IPC.SELECT_TEMPLATE, (event, arg) => {
+    ipcMain.on(Consts.IPC.SELECT_TEMPLATE, (event, arg) => {
         console.log('on SELECT_TEMPLATE');
         if (isPlayerWindowShow()) {
-            playerWindow.webContents.send(Const.IPC.SELECT_TEMPLATE, arg);
+            playerWindow.webContents.send(Consts.IPC.SELECT_TEMPLATE, arg);
         }
     })
 
-    ipcMain.on(Const.IPC.UPDATE_CONTENT, (event, arg) => {
+    ipcMain.on(Consts.IPC.SET_ATTRIBUTE, (event, arg) => {
+        console.log('on SET_ATTRIBUTE');
+        if (isPlayerWindowShow()) {
+            playerWindow.webContents.send(Consts.IPC.SET_ATTRIBUTE, arg);
+        }
+    })
+
+    ipcMain.on(Consts.IPC.UPDATE_CONTENT, (event, arg) => {
         console.log('on UPDATE_CONTENT');
         if (isPlayerWindowShow()) {
-            playerWindow.webContents.send(Const.IPC.UPDATE_CONTENT, arg);
+            playerWindow.webContents.send(Consts.IPC.UPDATE_CONTENT, arg);
         }
     })
 
-    ipcMain.on(Const.IPC.TOGGLE_PLAYER, (event, arg) => {
+    ipcMain.on(Consts.IPC.TOGGLE_PLAYER, (event, arg) => {
         console.log('on TOGGLE_PLAYER');
 
         if (!isPlayerWindowShow()) {
@@ -211,12 +218,12 @@ app.on('ready', () => {
             let externalDisplay = playerDisplay || getDefaultDisplay();
             playerWindow = creatPlayerWindow({ ...externalDisplay.bounds, width: 800, height: 750 });
 
-            mainWindow.webContents.send(Const.IPC.PLAYER_OPEN, '');
+            mainWindow.webContents.send(Consts.IPC.PLAYER_OPEN, '');
 
             playerWindow.once('closed', function () {
                 playerWindow = null;
                 if (mainWindow) {
-                    mainWindow.webContents.send(Const.IPC.PLAYER_CLOSE, '');
+                    mainWindow.webContents.send(Consts.IPC.PLAYER_CLOSE, '');
                 }
             })
 
@@ -229,12 +236,12 @@ app.on('ready', () => {
     /**
      * Menu
      */
-    ipcMain.on(Const.IPC.MENU_MEDIA_ITEM, function (event) {
+    ipcMain.on(Consts.IPC.MENU_MEDIA_ITEM, function (event) {
         const win = BrowserWindow.fromWebContents(event.sender);
         mediaItemMeun.popup(win);
     })
 
-    ipcMain.on(Const.IPC.MENU_MEDIA_LIST, function (event) {
+    ipcMain.on(Consts.IPC.MENU_MEDIA_LIST, function (event) {
         const win = BrowserWindow.fromWebContents(event.sender);
         mediaListOptionMeun.popup(win);
     })
@@ -242,7 +249,7 @@ app.on('ready', () => {
     /**
      * Dialog
      */
-    ipcMain.on(Const.IPC.NEW_MEDIA_DIALOG, function (event, arg) {
+    ipcMain.on(Consts.IPC.NEW_MEDIA_DIALOG, function (event, arg) {
         const options = {
             title: 'New',
             filters: [{ name: 'Media', extensions: ['json'] }]
@@ -252,7 +259,7 @@ app.on('ready', () => {
         })
     })
 
-    ipcMain.on(Const.IPC.MEDIA_RENAME_DIALOG, function (event, arg) {
+    ipcMain.on(Consts.IPC.MEDIA_RENAME_DIALOG, function (event, arg) {
         const options = {
             title: 'Rename',
             filters: [{ name: 'Media', extensions: ['json'] }]
@@ -262,18 +269,18 @@ app.on('ready', () => {
         })
     })
 
-    ipcMain.on(Const.IPC.SELECT_PATH_DIALOG, function (event, arg) {
+    ipcMain.on(Consts.IPC.SELECT_PATH_DIALOG, function (event, arg) {
         const option = {
             title: 'Path',
             defaultPath: './',
             properties: ['openDirectory']
         };
         dialog.showOpenDialog(mainWindow, option, function (filePaths) {
-            if (filePaths) mainWindow.webContents.send(Const.IPC.SELECT_PATH_DIALOG, filePaths[0]);
+            if (filePaths) mainWindow.webContents.send(Consts.IPC.SELECT_PATH_DIALOG, filePaths[0]);
         });
     });
 
-    ipcMain.on(Const.IPC.MEDIA_DELETE_DIALOG, function (event) {
+    ipcMain.on(Consts.IPC.MEDIA_DELETE_DIALOG, function (event) {
         const options = {
             type: 'info',
             title: 'Warning',
@@ -282,7 +289,7 @@ app.on('ready', () => {
         }
         dialog.showMessageBox(options, function (index) {
             let isDelete = (index == 0);
-            event.sender.send(Const.IPC.MEDIA_DELETE_DIALOG, isDelete)
+            event.sender.send(Consts.IPC.MEDIA_DELETE_DIALOG, isDelete)
         })
     })
 

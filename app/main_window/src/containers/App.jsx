@@ -5,7 +5,7 @@ import FileHelper from '../service/file-helper.jsx'
 
 import { GridStyle, MainStyle } from '../styles/main.jsx';
 import MediaItem from '../components/MediaItem.jsx';
-import { IPC as Const } from '../../../common/const.js';
+import * as Consts from '../../../common/const.js';
 export default class App extends React.Component {
 
     constructor(props) {
@@ -22,8 +22,6 @@ export default class App extends React.Component {
 
         this.newDirector = ''; // New Media 時的型別
 
-        this.selectTemplate = this.selectTemplate.bind(this);
-        this.updateContent = this.updateContent.bind(this);
         this.onLoadMedia = this.onLoadMedia.bind(this);
         this.saveMedia = this.saveMedia.bind(this);
         this.fileHelper = null;
@@ -56,30 +54,30 @@ export default class App extends React.Component {
 
         Ipc.onMenuMediaList((flag) => {
             switch (flag) {
-                case Const.MENU_MEDIA_LIST_.SELECT_PATH:
+                case Consts.IPC.MENU_MEDIA_LIST_.SELECT_PATH:
                     Ipc.showPathDialog();
                     break;
-                case Const.MENU_MEDIA_LIST_.REFRESH_PATH:
+                case Consts.IPC.MENU_MEDIA_LIST_.REFRESH_PATH:
                     if (this.checkPath())
                         this.updateFileList();
                     else
                         alert('Invalid Path')
                     break;
-                case Const.MENU_MEDIA_LIST_.SINGLE_SONG:
+                case Consts.IPC.MENU_MEDIA_LIST_.SINGLE_SONG:
                     this.newDirector = 'SingleSong';
                     if (this.checkPath())
                         Ipc.showNewMediaDialog();
                     else
                         alert('Invalid Path')
                     break;
-                case Const.MENU_MEDIA_LIST_.MULTI_SONG:
+                case Consts.IPC.MENU_MEDIA_LIST_.MULTI_SONG:
                     this.newDirector = 'MultiSong';
                     if (this.checkPath())
                         Ipc.showNewMediaDialog();
                     else
                         alert('Invalid Path')
                     break;
-                case Const.MENU_MEDIA_LIST_.BIBLE_STUDY:
+                case Consts.IPC.MENU_MEDIA_LIST_.BIBLE_STUDY:
                     this.newDirector = 'bible-study';
                     if (this.checkPath())
                         Ipc.showNewMediaDialog();
@@ -91,10 +89,10 @@ export default class App extends React.Component {
 
         Ipc.onMenuMediaItem((flag) => {
             switch (flag) {
-                case Const.MENU_MEDIA_ITEM_.RENAME:
+                case Consts.IPC.MENU_MEDIA_ITEM_.RENAME:
                     Ipc.showMediaRenameDialog();
                     break;
-                case Const.MENU_MEDIA_ITEM_.DELETE:
+                case Consts.IPC.MENU_MEDIA_ITEM_.DELETE:
                     Ipc.showMediaDeleteDialog();
                     break;
             }
@@ -223,13 +221,23 @@ export default class App extends React.Component {
         Ipc.selectTemplate(template);
     }
 
+    setAttribute(attribute) {
+        console.log('setAttribute()');
+        // 儲存 ＋ 更新Template
+        Ipc.setAttribute(JSON.stringify(attribute));
+    }
+
+    loadAttribute() {
+        
+    }
+
     updateContent(content) {
         console.log('updateContent()');
         Ipc.updateContent(JSON.stringify(content));
     }
 
     onLoadMedia(callback) {
-        this.loadMedia = callback
+        this.loadMedia = callback;
     }
 
     saveMedia(name, media) {
@@ -263,6 +271,8 @@ export default class App extends React.Component {
         // 重點: 確保loadMedia比較晚被呼叫，解決變換Director時遇到的問題。
         setImmediate(() => {
             this.loadMedia(filename, media.file);
+
+            // To-Do: 載入Attribute，並同時傳給Director和Template
         })
 
     }
@@ -394,6 +404,7 @@ export default class App extends React.Component {
                             this.state.director ?
                                 <Director selectTemplate={this.selectTemplate}
                                     updateContent={this.updateContent}
+                                    setAttribute={this.setAttribute}
                                     onLoadMedia={this.onLoadMedia}
                                     saveMedia={this.saveMedia} />
                                 :

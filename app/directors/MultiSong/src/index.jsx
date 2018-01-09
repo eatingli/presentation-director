@@ -5,6 +5,7 @@ import SongParser from './lib/song-parser.jsx';
 class Mode {
     static CTRL = 0;
     static EDIT = 1;
+    static ATTR = 2;
 }
 
 export default class SingleSong extends React.Component {
@@ -30,16 +31,28 @@ export default class SingleSong extends React.Component {
             mode: Mode.CTRL,
 
             selectedRow: -1,
+
+            // Attribute
+            attribute: {
+                titleFontSize: 60,
+                rowFontSize: 50,
+                rowLineHeight: 150,
+                backgroundColor: '#000000',
+                fontColor: '#FFFFFF',
+                fontShadowLevel: 20,
+                fontShadowColor: '#3030aa',
+            },
         }
 
         this.editSong = this.editSong.bind(this);
         this.saveSong = this.saveSong.bind(this);
+        this.setAttribute = this.setAttribute.bind(this);
 
         this.editUI = this.editUI.bind(this);
         this.ctrlUI = this.ctrlUI.bind(this);
 
         this.multiTemplate = this.multiTemplate.bind(this);
-        this.blackTemplate = this.blackTemplate.bind(this);
+        this.colorTemplate = this.colorTemplate.bind(this);
     }
 
     componentDidMount() {
@@ -91,18 +104,31 @@ export default class SingleSong extends React.Component {
         this.props.selectTemplate('multi-song');
         this.props.updateContent({
             title: this.state.song.title,
-            lyric1: part[0] ? part[0].content : '',
-            lyric2: part[1] ? part[1].content : '',
-            lyric3: part[2] ? part[2].content : '',
-            lyric4: part[3] ? part[3].content : '',
+            lyrics: part.map((row) => row.content)
         })
     }
 
-    blackTemplate() {
+    colorTemplate() {
         this.props.selectTemplate('color');
         this.props.updateContent({
-            color: '#000000'
+            color: this.state.attribute.backgroundColor
         });
+    }
+
+    setAttribute(attribute) {
+        this.setState({
+            attribute: {
+                ...this.state.attribute,
+                ...attribute
+            }
+        });
+        setImmediate(() => this.props.setAttribute(this.state.attribute));
+    }
+
+    handleAttr() {
+        this.setState({
+            mode: Mode.ATTR,
+        })
     }
 
     handleEdit() {
@@ -167,11 +193,8 @@ export default class SingleSong extends React.Component {
             title = (
                 <RowItem
                     text={`[ ${song.title} ]`}
-                    selected={this.state.selectedRow == 0}
-                    onClick={() => {
-                        {/* this.multiTemplate(song.parts[0]); */ }
-                        this.setState({ selectedRow: 0 });
-                    }} />
+                    selected={false}
+                    onClick={() => null} />
             )
 
             let selectIndex = 0;
@@ -203,7 +226,7 @@ export default class SingleSong extends React.Component {
                         text=""
                         selected={this.state.selectedRow == index}
                         onClick={() => {
-                            this.blackTemplate();
+                            this.colorTemplate();
                             this.setState({ selectedRow: index });
                         }} />
                 ));
@@ -215,14 +238,66 @@ export default class SingleSong extends React.Component {
 
 
         return (
-            <div className="scroller" style={Styles.container}>
+            <div className="scroller" style={Styles.container} >
                 <ul style={Styles.lyricList}>
                     {title}
                     {parts}
                 </ul>
                 <br />
                 <button style={Styles.btn} onClick={this.handleEdit.bind(this)}>Edit</button>
+                <button style={Styles.btn} onClick={this.handleAttr.bind(this)}>Attr</button>
             </div >
+        )
+    }
+
+    /**
+   * 屬性介面
+   */
+    attrUI() {
+        return (
+            <div className="scroller" style={Styles.container}>
+                <p>Title:</p>
+                Title Font Size
+                <input type="range" min="0" max="200" value={this.state.attribute.titleFontSize}
+                    onChange={(e) => this.setAttribute({ titleFontSize: e.target.value })} />
+                ({this.state.attribute.titleFontSize}px)
+                <br />
+
+                Row Font Size
+                <input type="range" min="0" max="200" value={this.state.attribute.rowFontSize}
+                    onChange={(e) => this.setAttribute({ rowFontSize: e.target.value })} />
+                ({this.state.attribute.rowFontSize}px)
+                <br />
+
+                Row Line Height
+                <input type="range" min="0" max="200" value={this.state.attribute.rowLineHeight}
+                    onChange={(e) => this.setAttribute({ rowLineHeight: e.target.value })} />
+                ({this.state.attribute.rowLineHeight}%)
+                <br />
+
+                <p>Common:</p>
+                Background Color
+                <input type="color" value={this.state.attribute.backgroundColor}
+                    onChange={(e) => { this.setAttribute({ backgroundColor: e.target.value }); console.log(e.target.value) }} />
+                <br />
+                Font Color
+                <input type="color" value={this.state.attribute.fontColor}
+                    onChange={(e) => { this.setAttribute({ fontColor: e.target.value }); console.log(e.target.value) }} />
+                <br />
+
+                Font Shadow Level
+                <input type="range" min="0" max="20" value={this.state.attribute.fontShadowLevel}
+                    onChange={(e) => this.setAttribute({ fontShadowLevel: e.target.value })} />
+                ({this.state.attribute.fontShadowLevel} lv)
+                <br />
+
+                Font Shadow Color
+                <input type="color" value={this.state.attribute.fontShadowColor}
+                    onChange={(e) => { this.setAttribute({ fontShadowColor: e.target.value }) }} />
+                <br />
+
+                <button style={Styles.btn} onClick={this.handleBack.bind(this)}>Back</button>
+            </div>
         )
     }
 
@@ -232,6 +307,8 @@ export default class SingleSong extends React.Component {
                 return this.editUI();
             case Mode.CTRL:
                 return this.ctrlUI();
+            case Mode.ATTR:
+                return this.attrUI();
             default:
                 return this.ctrlUI();
         }

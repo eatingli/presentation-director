@@ -4,9 +4,14 @@
 
 # Content
 
-- title: 歌詞
-- lyric1 ~ lyric4: 四行歌詞
+- title 標題
+- lyrics 歌詞
 
 # Config
-- titleSize: 標題字型大小
-- contentSize: 歌詞字型大小
+- titleFontSize (60px)
+- rowFontSize (50px)
+- rowLineHeight (150%)
+- backgroundColor (#000000)
+- fontColor (#FFFFFF)
+- fontShadowLevel (20)
+- fontShadowColor (#3030aa)

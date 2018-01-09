@@ -7,28 +7,62 @@ export default class SingleSongLyrics extends React.Component {
     }
 
     render() {
+        /* Content */
         let title = this.props.content.title || "　";
-        let lyric1 = this.props.content.lyric1 || "　";
-        let lyric2 = this.props.content.lyric2 || "　";
-        let lyric3 = this.props.content.lyric3 || "　";
-        let lyric4 = this.props.content.lyric4 || "　";
+        let lyrics = this.props.content.lyrics || [];
+
+        /* Attribute */
+        let attribute = this.props.attribute || {};
+        let titleFontSize = attribute.titleFontSize || 60;
+        let rowFontSize = attribute.rowFontSize || 50;
+        let rowLineHeight = attribute.rowLineHeight || 150;
+        let backgroundColor = attribute.backgroundColor || '#000000'
+        let fontColor = attribute.fontColor || '#FFFFFF';
+        let fontShadowLevel = attribute.fontShadowLevel || 20;
+        let fontShadowColor = attribute.fontShadowColor || '#3030aa';
+
+        /* Check Attribute */
+
+        // textShadow
+        let textShadow = [];
+        for (let i = 0; i < fontShadowLevel; i++)
+            textShadow.push(`0 0 ${fontShadowLevel * 0.6}px ${fontShadowColor}`);
+        textShadow = textShadow.join(',');
+
+        /* Style */
+        let containerStyle = {
+            ...Styles.container,
+            background: backgroundColor,
+            color: fontColor,
+            textShadow: textShadow,
+        }
+
+        let titleStyle = {
+            ...Styles.title,
+            fontSize: `${titleFontSize}px`
+        }
+
+        let rowStyle = {
+            ...Styles.row,
+            fontSize: `${rowFontSize}px`,
+            lineHeight: `${rowLineHeight}%`
+        }
 
         return (
-            <div style={Styles.container}>
-                
+            <div style={containerStyle}>
+
                 {/* Title */}
-                <div style={Styles.title}>
+                <div style={titleStyle}>
                     {title}
                 </div>
 
                 {/* Content */}
                 <div style={Styles.content}>
-                    <div style={Styles.row}>{lyric1}</div>
-                    <div style={Styles.row}>{lyric2}</div>
-                    <div style={Styles.row}>{lyric3}</div>
-                    <div style={Styles.row}>{lyric4}</div>
+                    {lyrics.map((lyric, i) => (
+                        <div style={rowStyle} key={i}>{lyric}</div>
+                    ))}
                 </div>
-            </div>
+            </div >
         )
     }
 }
@@ -43,17 +77,12 @@ const Styles = {
     container: {
         width: '100%',
         height: '100%',
-        background: '#000000',
         display: 'flex',
         flexDirection: 'column',
-
-        color: '#FFFFFF',
-        textShadow: textShadow,
-        fontFamily: 'NotoSansTC, 微軟正黑體, Roboto',
+        fontFamily: 'NotoSansTC, Roboto, 微軟正黑體',
         overflow: 'hidden',
     },
     title: {
-        fontSize: '4.5em',
         margin: '30px 30px 0 auto',
         position: 'absolute',
         top: 0,
@@ -65,9 +94,7 @@ const Styles = {
         flexDirection: 'column',
     },
     row: {
-        fontSize: '8em',
         textAlign: 'center',
-        lineHeight: '1.5em',
         wordSpacing: '0.2em',
         whiteSpace: 'nowrap',
     },

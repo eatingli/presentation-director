@@ -6,9 +6,13 @@
 
 - title1: 主要標題
 - title2: 子標題
-- description: 兩行描述
+- description: 描述 (Array)
 
-# Config
-- title1Size: 主要標題字型大小
-- title2Size: 子標題字型大小
-- descriptionSize: 描述字型大小
+# Attribute
+- title1FontSize (40px)
+- title2FontSize (28px)
+- descriptionFontSize (26px)
+- backgroundColor (#000000)
+- fontColor (#FFFFFF)
+- fontShadowLevel (20)
+- fontShadowColor (#3030aa)

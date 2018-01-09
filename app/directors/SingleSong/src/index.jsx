@@ -5,6 +5,7 @@ import SingleSongParser from './lib/song-parser.jsx';
 class Mode {
     static CTRL = 0;
     static EDIT = 1;
+    static ATTR = 2;
 }
 
 export default class SingleSong extends React.Component {
@@ -28,6 +29,24 @@ export default class SingleSong extends React.Component {
             // 解析過的資料
             song: {},
 
+            // Attribute
+            attribute: {
+                // Title
+                title1FontSize: 40,
+                title2FontSize: 24,
+                descriptionFontSize: 26,
+                // Lyric
+                verticalOffset: 5,
+                lyric2Visible: true,
+                lyric1FontSize: 36,
+                lyric2FontSize: 20,
+                // Common
+                backgroundColor: '#000000',
+                fontColor: '#FFFFFF',
+                fontShadowLevel: 20,
+                fontShadowColor: '#3030aa',
+            },
+
             // Mode
             mode: Mode.CTRL,
 
@@ -36,6 +55,7 @@ export default class SingleSong extends React.Component {
 
         this.editSong = this.editSong.bind(this);
         this.saveSong = this.saveSong.bind(this);
+        this.setAttribute = this.setAttribute.bind(this);
 
         this.editUI = this.editUI.bind(this);
         this.ctrlUI = this.ctrlUI.bind(this);
@@ -96,8 +116,7 @@ export default class SingleSong extends React.Component {
         this.props.updateContent({
             title1: this.state.song.title1,
             title2: this.state.song.title2,
-            description1: this.state.song.description1,
-            description2: this.state.song.description2
+            descriptions: this.state.song.descriptions,
         })
     }
 
@@ -109,12 +128,28 @@ export default class SingleSong extends React.Component {
         })
     }
 
+    setAttribute(attribute) {
+        this.setState({
+            attribute: {
+                ...this.state.attribute,
+                ...attribute
+            }
+        });
+        setImmediate(() => this.props.setAttribute(this.state.attribute));
+    }
+
     handleEdit() {
         this.setState({
             mode: Mode.EDIT,
             editTitle: this.state.rawTitle,
             editDescription: this.state.rawDescription,
             editLyrics: this.state.rawLyrics,
+        })
+    }
+
+    handleAttr() {
+        this.setState({
+            mode: Mode.ATTR,
         })
     }
 
@@ -147,11 +182,9 @@ export default class SingleSong extends React.Component {
                 <br />
 
                 {/* 描述 */}
-                <textarea style={Styles.textDescription} rows="2" value={this.state.editDescription} placeholder="描述"
-                    onChange={(e) => {
-                        if (e.target.value.split('\n').length <= 2)
-                            this.setState({ editDescription: e.target.value })
-                    }}></textarea>
+                <textarea style={Styles.textDescription} rows="4" value={this.state.editDescription} placeholder="描述"
+                    onChange={(e) => { this.setState({ editDescription: e.target.value }) }}>
+                </textarea>
                 <br />
 
                 {/* 歌詞 */}
@@ -208,7 +241,83 @@ export default class SingleSong extends React.Component {
                 </ul>
                 <br />
                 <button style={Styles.btn} onClick={this.handleEdit.bind(this)}>Edit</button>
+                <button style={Styles.btn} onClick={this.handleAttr.bind(this)}>Attr</button>
             </div >
+        )
+    }
+
+    /**
+     * 屬性介面
+     */
+    attrUI() {
+        return (
+            <div className="scroller" style={Styles.container}>
+                <p>Title:</p>
+                Title 1 Font Size
+                <input type="range" min="0" max="200" value={this.state.attribute.title1FontSize}
+                    onChange={(e) => this.setAttribute({ title1FontSize: e.target.value })} />
+                ({this.state.attribute.title1FontSize}px)
+                <br />
+
+                Title 2 Font Size
+                <input type="range" min="0" max="200" value={this.state.attribute.title2FontSize}
+                    onChange={(e) => this.setAttribute({ title2FontSize: e.target.value })} />
+                ({this.state.attribute.title2FontSize}px)
+                <br />
+
+                Description Font Size
+                <input type="range" min="0" max="200" value={this.state.attribute.descriptionFontSize}
+                    onChange={(e) => this.setAttribute({ descriptionFontSize: e.target.value })} />
+                ({this.state.attribute.descriptionFontSize}px)
+                <br />
+
+                <p>Lyric:</p>
+                Vertical Offset
+                <input type="range" min="0" max="100" value={this.state.attribute.verticalOffset}
+                    onChange={(e) => this.setAttribute({ verticalOffset: e.target.value })} />
+                ({this.state.attribute.verticalOffset}%)
+                <br />
+
+                Lyric 2 Visible
+                <input type="checkbox" checked={this.state.attribute.lyric2Visible}
+                    onChange={(e) => this.setAttribute({ lyric2Visible: e.target.checked })} />
+                <br />
+
+                Lyric 1 Font Size
+                <input type="range" min="0" max="200" value={this.state.attribute.lyric1FontSize}
+                    onChange={(e) => this.setAttribute({ lyric1FontSize: e.target.value })} />
+                ({this.state.attribute.lyric1FontSize}px)
+                <br />
+
+                Lyric 2 Font Size
+                <input type="range" min="0" max="200" value={this.state.attribute.lyric2FontSize}
+                    onChange={(e) => this.setAttribute({ lyric2FontSize: e.target.value })} />
+                ({this.state.attribute.lyric2FontSize}px)
+                <br />
+
+                <p>Common:</p>
+                Background Color
+                <input type="color" value={this.state.attribute.backgroundColor}
+                    onChange={(e) => { this.setAttribute({ backgroundColor: e.target.value }); console.log(e.target.value) }} />
+                <br />
+                Font Color
+                <input type="color" value={this.state.attribute.fontColor}
+                    onChange={(e) => { this.setAttribute({ fontColor: e.target.value }); console.log(e.target.value) }} />
+                <br />
+
+                Font Shadow Level
+                <input type="range" min="0" max="20" value={this.state.attribute.fontShadowLevel}
+                    onChange={(e) => this.setAttribute({ fontShadowLevel: e.target.value })} />
+                ({this.state.attribute.fontShadowLevel} lv)
+                <br />
+
+                Font Shadow Color
+                <input type="color" value={this.state.attribute.fontShadowColor}
+                    onChange={(e) => { this.setAttribute({ fontShadowColor: e.target.value }) }} />
+                <br />
+
+                <button style={Styles.btn} onClick={this.handleBack.bind(this)}>Back</button>
+            </div>
         )
     }
 
@@ -219,6 +328,8 @@ export default class SingleSong extends React.Component {
                 return this.editUI();
             case Mode.CTRL:
                 return this.ctrlUI();
+            case Mode.ATTR:
+                return this.attrUI();
             default:
                 return this.ctrlUI();
         }

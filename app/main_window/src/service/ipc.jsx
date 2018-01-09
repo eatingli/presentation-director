@@ -1,5 +1,5 @@
 import Electron, { ipcRenderer } from 'electron';
-import { IPC as Const } from '../../../common/const.js';
+import * as Consts from '../../../common/const.js';
 
 export default class Ipc {
 
@@ -7,25 +7,29 @@ export default class Ipc {
      * Basic
      */
     static selectTemplate(template) {
-        ipcRenderer.send(Const.SELECT_TEMPLATE, template);
+        ipcRenderer.send(Consts.IPC.SELECT_TEMPLATE, template);
+    }
+
+    static setAttribute(attribute) {
+        ipcRenderer.send(Consts.IPC.SET_ATTRIBUTE, attribute);
     }
 
     static updateContent(content) {
-        ipcRenderer.send(Const.UPDATE_CONTENT, content);
+        ipcRenderer.send(Consts.IPC.UPDATE_CONTENT, content);
     }
 
     static togglePlayer() {
-        ipcRenderer.send(Const.TOGGLE_PLAYER, '');
+        ipcRenderer.send(Consts.IPC.TOGGLE_PLAYER, '');
     }
 
     static onPlayerOpen(callback) {
-        ipcRenderer.on(Const.PLAYER_OPEN, (event, arg) => {
+        ipcRenderer.on(Consts.IPC.PLAYER_OPEN, (event, arg) => {
             callback();
         });
     }
 
     static onPlayerClose(callback) {
-        ipcRenderer.on(Const.PLAYER_CLOSE, (event, arg) => {
+        ipcRenderer.on(Consts.IPC.PLAYER_CLOSE, (event, arg) => {
             callback();
         });
     }
@@ -35,21 +39,21 @@ export default class Ipc {
      * Menu
      */
     static showMenuMediaListOption() {
-        ipcRenderer.send(Const.MENU_MEDIA_LIST, '');
+        ipcRenderer.send(Consts.IPC.MENU_MEDIA_LIST, '');
     }
 
     static showMenuMediaItem() {
-        ipcRenderer.send(Const.MENU_MEDIA_ITEM, '');
+        ipcRenderer.send(Consts.IPC.MENU_MEDIA_ITEM, '');
     }
 
     static onMenuMediaList(callback) {
-        ipcRenderer.addListener(Const.MENU_MEDIA_LIST, (event, flag) => {
+        ipcRenderer.addListener(Consts.IPC.MENU_MEDIA_LIST, (event, flag) => {
             callback(flag);
         })
     }
 
     static onMenuMediaItem(callback) {
-        ipcRenderer.addListener(Const.MENU_MEDIA_ITEM, (event, flag) => {
+        ipcRenderer.addListener(Consts.IPC.MENU_MEDIA_ITEM, (event, flag) => {
             callback(flag);
         })
     }
@@ -58,41 +62,41 @@ export default class Ipc {
      * Dialog
      */
     static showPathDialog() {
-        ipcRenderer.send(Const.SELECT_PATH_DIALOG, '');
+        ipcRenderer.send(Consts.IPC.SELECT_PATH_DIALOG, '');
     }
 
     static onSelectPath(callback) {
-        ipcRenderer.on(Const.SELECT_PATH_DIALOG, (event, path) => {
+        ipcRenderer.on(Consts.IPC.SELECT_PATH_DIALOG, (event, path) => {
             callback(path);
         });
     }
 
     static showNewMediaDialog() {
-        ipcRenderer.send(Const.NEW_MEDIA_DIALOG, '');
+        ipcRenderer.send(Consts.IPC.NEW_MEDIA_DIALOG, '');
     }
 
     static onNewMedia(callback) {
-        ipcRenderer.on(Const.NEW_MEDIA_DIALOG, (event, filename) => {
+        ipcRenderer.on(Consts.IPC.NEW_MEDIA_DIALOG, (event, filename) => {
             callback(filename);
         });
     }
 
     static showMediaRenameDialog() {
-        ipcRenderer.send(Const.MEDIA_RENAME_DIALOG, '');
+        ipcRenderer.send(Consts.IPC.MEDIA_RENAME_DIALOG, '');
     }
 
     static onMediaRename(callback) {
-        ipcRenderer.on(Const.MEDIA_RENAME_DIALOG, (event, filename) => {
+        ipcRenderer.on(Consts.IPC.MEDIA_RENAME_DIALOG, (event, filename) => {
             callback(filename);
         });
     }
 
     static showMediaDeleteDialog() {
-        ipcRenderer.send(Const.MEDIA_DELETE_DIALOG, '');
+        ipcRenderer.send(Consts.IPC.MEDIA_DELETE_DIALOG, '');
     }
 
     static onMediaDelete(callback) {
-        ipcRenderer.on(Const.MEDIA_DELETE_DIALOG, (event, isDelete) => {
+        ipcRenderer.on(Consts.IPC.MEDIA_DELETE_DIALOG, (event, isDelete) => {
             callback(isDelete);
         });
     }
