@@ -1,3 +1,5 @@
+import Electron, { remote } from 'electron';
+import fs from 'fs'
 import Path from 'path'
 import React from 'react';
 import Ipc from '../service/ipc.jsx'
@@ -6,6 +8,25 @@ import FileHelper from '../service/file-helper.jsx'
 import { GridStyle, MainStyle } from '../styles/main.jsx';
 import MediaItem from '../components/MediaItem.jsx';
 import * as Consts from '../../../common/const.js';
+
+let temp = remote.app.getAppPath();
+let dataPath = temp.indexOf('app.asar') > -1 ? Path.join(temp, '..', '..', '..', '..', 'data') : Path.join(temp, 'data');
+
+class AttritubeManager {
+    constructor() {
+        this.attribute = {}
+    }
+
+    setAttribute(director, attribute) {
+        this.attribute = attribute;
+        // Save to file
+        let attributePath = Path.join(dataPath, 'attribute', `${director}.json`);
+        FileHelper.saveJsonFile(attributePath, attribute);
+    }
+}
+
+let attributeManager = new AttritubeManager();
+
 export default class App extends React.Component {
 
     constructor(props) {
@@ -18,10 +39,17 @@ export default class App extends React.Component {
             launched: false,
 
             director: '',
+            attribute: {},
+            attrFlag: false,
         }
 
         this.newDirector = ''; // New Media 時的型別
 
+        this.checkNewAttr = this.checkNewAttr.bind(this);
+
+        this.selectTemplate = this.selectTemplate.bind(this);
+        this.updateContent = this.updateContent.bind(this);
+        this.setAttribute = this.setAttribute.bind(this);
         this.onLoadMedia = this.onLoadMedia.bind(this);
         this.saveMedia = this.saveMedia.bind(this);
         this.fileHelper = null;
@@ -45,6 +73,7 @@ export default class App extends React.Component {
         Ipc.onPlayerOpen(() => {
             console.log('On PLAYER_OPEN');
             this.setState({ launched: true })
+            Ipc.setAttribute(JSON.stringify(this.state.attribute)); // 直接設定
         });
 
         Ipc.onPlayerClose(() => {
@@ -213,27 +242,30 @@ export default class App extends React.Component {
             })
     }
 
+    checkNewAttr() {
+        if (this.state.attrFlag) {
+            Ipc.setAttribute(JSON.stringify(this.state.attribute)); // 直接設定
+            this.setState({ attrFlag: false })
+        }
+    }
+
     /**
      * Director 調用
      */
     selectTemplate(template) {
         console.log('selectTemplate()');
         Ipc.selectTemplate(template);
-    }
-
-    setAttribute(attribute) {
-        console.log('setAttribute()');
-        // 儲存 ＋ 更新Template
-        Ipc.setAttribute(JSON.stringify(attribute));
-    }
-
-    loadAttribute() {
-        
+        setImmediate(() => {
+            this.checkNewAttr();
+        })
     }
 
     updateContent(content) {
         console.log('updateContent()');
         Ipc.updateContent(JSON.stringify(content));
+        setImmediate(() => {
+            this.checkNewAttr();
+        })
     }
 
     onLoadMedia(callback) {
@@ -244,6 +276,16 @@ export default class App extends React.Component {
         console.log(media, '.......');
         this.fileHelper.saveFile(name, media)
             .then(() => console.log('save success!'));
+    }
+
+    setAttribute(attribute) {
+        console.log('setAttribute()');
+        // Save to File
+        let attributePath = Path.join(dataPath, 'attribute', `${this.state.director}.json`);
+        FileHelper.saveJsonFile(attributePath, attribute)
+        // 直接設定且更新狀態
+        Ipc.setAttribute(JSON.stringify(this.state.attribute));
+        this.setState({ attribute: attribute })
     }
 
     /**
@@ -265,16 +307,22 @@ export default class App extends React.Component {
 
     handleMediaItemClick(media) {
         let filename = media.filename;
+        let director = media.file.director;
 
-        this.setState({ selectedMedia: media, director: media.file.director });
+        // 載入 Attribute
+        if (director !== this.state.director) {
+            // Load from file
+            let attributePath = Path.join(dataPath, 'attribute', `${director}.json`);
+            let attribute = FileHelper.loadJsonFile(attributePath);
+            this.setState({ attribute: attribute, attrFlag: true }) // 等待第一次切換才送給Templaye
+        }
+
+        this.setState({ selectedMedia: media, director: director });
 
         // 重點: 確保loadMedia比較晚被呼叫，解決變換Director時遇到的問題。
         setImmediate(() => {
             this.loadMedia(filename, media.file);
-
-            // To-Do: 載入Attribute，並同時傳給Director和Template
         })
-
     }
 
     render() {
@@ -402,7 +450,10 @@ export default class App extends React.Component {
                     <div style={GridStyle.centerR}>
                         {
                             this.state.director ?
-                                <Director selectTemplate={this.selectTemplate}
+                                <Director
+                                    // 傳入Attribute進去，同一個Director，建構子不會重新調用
+                                    initAttribute={this.state.attribute}
+                                    selectTemplate={this.selectTemplate}
                                     updateContent={this.updateContent}
                                     setAttribute={this.setAttribute}
                                     onLoadMedia={this.onLoadMedia}

@@ -18,6 +18,47 @@ export default class FileHelper {
         this.setDirPath(dirPath);
     }
 
+    static mkdir(p) {
+        p.split(path.sep)
+            .reduce((pre, cur) => {
+                if (pre === '') pre = path.sep;
+                let curDir = path.join(pre, cur);
+                try {
+                    fs.mkdirSync(curDir);
+                } catch (err) {
+                    if (err.code !== 'EEXIST') {
+                        throw err;
+                    }
+                }
+                return curDir;
+            })
+    }
+
+    static loadJsonFile(p) {
+        if (fs.existsSync(p)) {
+            let data = fs.readFileSync(p, {
+                encoding: 'utf8',
+                flag: 'r'
+            })
+            try {
+                return JSON.parse(data)
+            } catch (e) {
+                return {}
+            }
+        } else {
+            FileHelper.mkdir(path.parse(p).dir);
+            fs.writeFileSync(p, JSON.stringify({}))
+            return {};
+        }
+    }
+
+    static saveJsonFile(p, data) {
+        if (!fs.existsSync(p)) {
+            FileHelper.mkdir(path.parse(p).dir);
+        }
+        fs.writeFileSync(p, JSON.stringify(data))
+    }
+
     setDirPath(dirPath) {
         this.dirPath = dirPath;
 

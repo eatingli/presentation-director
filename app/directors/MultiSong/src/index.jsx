@@ -41,6 +41,7 @@ export default class SingleSong extends React.Component {
                 fontColor: '#FFFFFF',
                 fontShadowLevel: 20,
                 fontShadowColor: '#3030aa',
+                ...props.initAttribute
             },
         }
 

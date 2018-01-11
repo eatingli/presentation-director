@@ -102,6 +102,7 @@ function creatPlayerWindow(bounds) {
         y: bounds.y,
         width: bounds.width,
         height: bounds.height,
+        show: false,
     }
 
     if (isPlayerFullScreen) {
@@ -218,8 +219,12 @@ app.on('ready', () => {
             let externalDisplay = playerDisplay || getDefaultDisplay();
             playerWindow = creatPlayerWindow({ ...externalDisplay.bounds, width: 800, height: 750 });
 
-            mainWindow.webContents.send(Consts.IPC.PLAYER_OPEN, '');
+            // ready-to-show 用來確保ＤＯＭ已經載入完畢
+            playerWindow.once('ready-to-show', () => {
+                playerWindow.show()
+                mainWindow.webContents.send(Consts.IPC.PLAYER_OPEN, '');
 
+            })
             playerWindow.once('closed', function () {
                 playerWindow = null;
                 if (mainWindow) {
